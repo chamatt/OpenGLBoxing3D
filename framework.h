@@ -28,6 +28,8 @@ class Color;
 class Random;
 class Collision;
 
+typedef vector< vector<GLfloat> > Matrix;
+
 class Util {
 public:
     static GLfloat degToRad(GLfloat angle) {
@@ -88,6 +90,22 @@ class Point2D {
         }
 };
 
+
+class Vector3D
+{
+public:
+    GLfloat x, y, z;
+    Vector3D() : x(0), y(0), z(0) {}
+    Vector3D(GLfloat x, GLfloat y, GLfloat z) : x(x), y(y), z(z) {}
+
+    Vector3D& normalize() {
+        float invLength = 1.0f / sqrtf(x*x + y*y + z*z);
+        x *= invLength;
+        y *= invLength;
+        z *= invLength;
+        return *this;
+    }
+};
 
 
 
@@ -194,15 +212,15 @@ class Transformation {
     
         void logRotate(GLfloat angle);
     
-        void matrixMultiply(vector< vector<GLfloat> > mat2);
+        void matrixMultiply(Matrix mat2, int n);
 
-        void matrixVectorMultiply(vector< vector<GLfloat> > vet1,
-                                  vector< vector<GLfloat> > &res);
+        void matrixVectorMultiply(Matrix vet1,
+                                  Matrix &res, int n);
 
     public:
-        vector< vector<GLfloat> > matrix;
+        Matrix matrix;
 
-        vector< vector<GLfloat> > getIdentity();
+        Matrix getIdentity();
         Transformation(){
             this->matrix = this->getIdentity();
             this->log();
@@ -213,8 +231,16 @@ class Transformation {
         void scale2d(GLfloat Sx, GLfloat Sy);
 
         void rotate2d(GLfloat angle);
+    
+        void translate3d(GLfloat x, GLfloat y, GLfloat z);
+
+        void scale3d(GLfloat Sx, GLfloat Sy, GLfloat Sz);
+
+        void rotate3d(GLfloat angle, GLfloat x, GLfloat y, GLfloat z);
 
         void apply(Point2D* point);
+        
+        void apply3D(Vector3D* vector);
     
         void logMode(bool state);
 };
