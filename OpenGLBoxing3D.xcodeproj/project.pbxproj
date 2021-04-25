@@ -9,6 +9,8 @@
 /* Begin PBXFileReference section */
 		901FC17A25FECBCD00499C57 /* game.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = game.cpp; sourceTree = "<group>"; };
 		901FC17B25FECBCD00499C57 /* game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = game.h; sourceTree = "<group>"; };
+		9037BF1D26352BD600C2BDC1 /* OpenGLBoxing3D.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = OpenGLBoxing3D.xcodeproj; sourceTree = "<group>"; };
+		9037BF2026352BE600C2BDC1 /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = "<group>"; };
 		905F384A2606E55C0061448D /* tinyxml2lib.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml2lib.cpp; sourceTree = "<group>"; };
 		905F384B2606E55C0061448D /* tinyxml2lib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tinyxml2lib.h; sourceTree = "<group>"; };
 		905F384C2606E5C20061448D /* xmlparser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = xmlparser.cpp; sourceTree = "<group>"; };
@@ -22,13 +24,17 @@
 		90F480AD25FDA52C00B1C69C /* makefile.linux */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = makefile.linux; sourceTree = "<group>"; };
 		90F480AE25FDA52C00B1C69C /* framework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = framework.h; sourceTree = "<group>"; };
 		90F480AF25FDA52C00B1C69C /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		90F480B025FDA52C00B1C69C /* OpenGLBoxing2D.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = OpenGLBoxing2D.xcodeproj; sourceTree = "<group>"; };
 		90F480B325FDA52C00B1C69C /* framework.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = framework.cpp; sourceTree = "<group>"; };
 		90F480B425FDA7F900B1C69C /* character.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = character.cpp; sourceTree = "<group>"; };
 		90F480B525FDA7F900B1C69C /* character.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = character.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		9037BF1E26352BD600C2BDC1 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
 		90F480A125FDA43B00B1C69C = {
 			isa = PBXGroup;
 			children = (
@@ -49,30 +55,26 @@
 				90F480AE25FDA52C00B1C69C /* framework.h */,
 				90F480AF25FDA52C00B1C69C /* main.cpp */,
 				90F480AD25FDA52C00B1C69C /* makefile.linux */,
-				90F480B025FDA52C00B1C69C /* OpenGLBoxing2D.xcodeproj */,
 				90D4CB9E26090BAA00931D53 /* makefile.mac */,
+				9037BF1D26352BD600C2BDC1 /* OpenGLBoxing3D.xcodeproj */,
+				9037BF2026352BE600C2BDC1 /* makefile */,
 			);
-			sourceTree = "<group>";
-		};
-		90F480B125FDA52C00B1C69C /* Products */ = {
-			isa = PBXGroup;
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXLegacyTarget section */
-		90F480A625FDA43B00B1C69C /* OpenGLBoxing2D */ = {
+		90F480A625FDA43B00B1C69C /* OpenGLBoxing3D */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "run ARGS=\"/Users/matheusleanon/Documents/Code/OpenGLBoxing2D/examples/arena_2.svg\"";
-			buildConfigurationList = 90F480A925FDA43B00B1C69C /* Build configuration list for PBXLegacyTarget "OpenGLBoxing2D" */;
+			buildArgumentsString = "run ARGS=\"/Users/matheusleanon/Documents/Code/OpenGLBoxing3D/examples/arena_2.svg\"";
+			buildConfigurationList = 90F480A925FDA43B00B1C69C /* Build configuration list for PBXLegacyTarget "OpenGLBoxing3D" */;
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/matheusleanon/Documents/Code/OpenGLBoxing2D;
+			buildWorkingDirectory = /Users/matheusleanon/Documents/Code/OpenGLBoxing3D;
 			dependencies = (
 			);
-			name = OpenGLBoxing2D;
+			name = OpenGLBoxing3D;
 			passBuildSettingsInEnvironment = 1;
 			productName = OpenGLBoxing2D;
 		};
@@ -89,7 +91,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 90F480A525FDA43B00B1C69C /* Build configuration list for PBXProject "OpenGLBoxing2D" */;
+			buildConfigurationList = 90F480A525FDA43B00B1C69C /* Build configuration list for PBXProject "OpenGLBoxing3D" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -101,13 +103,13 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 90F480B125FDA52C00B1C69C /* Products */;
-					ProjectRef = 90F480B025FDA52C00B1C69C /* OpenGLBoxing2D.xcodeproj */;
+					ProductGroup = 9037BF1E26352BD600C2BDC1 /* Products */;
+					ProjectRef = 9037BF1D26352BD600C2BDC1 /* OpenGLBoxing3D.xcodeproj */;
 				},
 			);
 			projectRoot = "";
 			targets = (
-				90F480A625FDA43B00B1C69C /* OpenGLBoxing2D */,
+				90F480A625FDA43B00B1C69C /* OpenGLBoxing3D */,
 			);
 		};
 /* End PBXProject section */
@@ -248,7 +250,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		90F480A525FDA43B00B1C69C /* Build configuration list for PBXProject "OpenGLBoxing2D" */ = {
+		90F480A525FDA43B00B1C69C /* Build configuration list for PBXProject "OpenGLBoxing3D" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				90F480A725FDA43B00B1C69C /* Debug */,
@@ -257,7 +259,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		90F480A925FDA43B00B1C69C /* Build configuration list for PBXLegacyTarget "OpenGLBoxing2D" */ = {
+		90F480A925FDA43B00B1C69C /* Build configuration list for PBXLegacyTarget "OpenGLBoxing3D" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				90F480AA25FDA43B00B1C69C /* Debug */,

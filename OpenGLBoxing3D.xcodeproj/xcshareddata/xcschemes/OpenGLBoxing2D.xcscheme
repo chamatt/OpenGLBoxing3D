@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "90F480A625FDA43B00B1C69C"
-               BuildableName = "OpenGLBoxing2D"
-               BlueprintName = "OpenGLBoxing2D"
-               ReferencedContainer = "container:OpenGLBoxing2D.xcodeproj">
+               BuildableName = "OpenGLBoxing3D"
+               BlueprintName = "OpenGLBoxing3D"
+               ReferencedContainer = "container:OpenGLBoxing3D.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -51,9 +51,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "90F480A625FDA43B00B1C69C"
-            BuildableName = "OpenGLBoxing2D"
-            BlueprintName = "OpenGLBoxing2D"
-            ReferencedContainer = "container:OpenGLBoxing2D.xcodeproj">
+            BuildableName = "OpenGLBoxing3D"
+            BlueprintName = "OpenGLBoxing3D"
+            ReferencedContainer = "container:OpenGLBoxing3D.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
