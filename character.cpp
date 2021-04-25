@@ -236,11 +236,6 @@ void Character::DrawNose()
     
     glTranslatef(0, this->noseRadius, 0);
     
-    // @todo remove this
-    glTranslatef(10, 10, 0);
-    glRotatef(90, 0,0,1);
-    // remove above
-    
     this->DrawSphere(this->noseRadius, this->noseColor);
     this->DrawStroke(this->noseRadius, this->noseStroke);
     glPopMatrix();
@@ -285,11 +280,6 @@ void Character::DrawCharacter(GLfloat x, GLfloat y)
     glPushMatrix();
     Vector3D* nose = new Vector3D(0,0,0);
     auto tr = moveForwardTransform(torsoRadius + noseRadius);
-    
-    // @todo remove this
-    tr->translate3d(10, 10, 0);
-    tr->rotate3d(90, 0,0,1);
-    // remove above
     
     tr->apply3D(nose);
     
