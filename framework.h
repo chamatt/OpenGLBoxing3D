@@ -95,14 +95,16 @@ class Vector3D
 {
 public:
     GLfloat x, y, z;
-    Vector3D() : x(0), y(0), z(0) {}
-    Vector3D(GLfloat x, GLfloat y, GLfloat z) : x(x), y(y), z(z) {}
+    Vector3D() : x(0), y(0), z(0) {
+    }
+    Vector3D(GLfloat nx, GLfloat ny, GLfloat nz) : x(nx), y(ny), z(nz) {}
 
     Vector3D& normalize() {
-        float invLength = 1.0f / sqrtf(x*x + y*y + z*z);
-        x *= invLength;
-        y *= invLength;
-        z *= invLength;
+        GLfloat invLength = 1.0f / sqrtf(x*x + y*y + z*z);
+        
+        this->x *= invLength;
+        this->y *= invLength;
+        this->z *= invLength;
         return *this;
     }
 };
@@ -221,6 +223,7 @@ class Transformation {
         Matrix matrix;
 
         Matrix getIdentity();
+        Matrix getIdentity3D();
         Transformation(){
             this->matrix = this->getIdentity();
             this->log();

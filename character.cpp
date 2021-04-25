@@ -215,6 +215,12 @@ void Character::DrawNose()
     glTranslatef(0, this->torsoRadius, 0);
     
     glTranslatef(0, this->noseRadius, 0);
+    
+    // @todo remove this
+    glTranslatef(10, 10, 0);
+    glRotatef(90, 0,0,1);
+    // remove above
+    
     this->DrawCircle(this->noseRadius, this->noseColor);
     this->DrawStroke(this->noseRadius, this->noseStroke);
     glPopMatrix();
@@ -238,7 +244,56 @@ void Character::DrawCharacter(GLfloat x, GLfloat y)
         this->DrawCircleDashed(outsideRadius, Color(255, 255, 255));
     }
     
+    
     glPopMatrix();
+    
+    
+    // @TODO DEBUG DRAWING
+    
+    
+    //torso
+    glPushMatrix();
+    Vector3D* torso = new Vector3D(0,0,0);
+    moveForwardTransform(0)->apply3D(torso);
+    glTranslatef(torso->x, torso->y, torso->z);
+    this->DrawCircle(this->noseRadius, this->armsColor);
+    
+    glPopMatrix();
+    
+    //nose
+    glPushMatrix();
+    Vector3D* nose = new Vector3D(0,0,0);
+    auto tr = moveForwardTransform(torsoRadius + noseRadius);
+    
+    // @todo remove this
+    tr->translate3d(10, 10, 0);
+    tr->rotate3d(90, 0,0,1);
+    // remove above
+    
+    tr->apply3D(nose);
+    
+    glTranslatef(nose->x, nose->y, nose->z);
+    this->DrawCircle(this->noseRadius/2.0, this->armsColor);
+    
+    glPopMatrix();
+    
+    //right glove
+    glPushMatrix();
+    Vector3D* point = new Vector3D(0,0,0);
+    rightGloveTransform()->apply3D(point);
+    glTranslatef(point->x, point->y, point->z);
+    this->DrawCircle(this->noseRadius, this->armsColor);
+    glPopMatrix();
+    
+    
+    // left glove
+    glPushMatrix();
+    Vector3D* point2 = new Vector3D(0,0,0);
+    leftGloveTransform()->apply3D(point2);
+    glTranslatef(point2->x, point2->y, point2->z);
+    this->DrawCircle(this->noseRadius, this->noseColor);
+    glPopMatrix();
+    
 }
 
 void Character::MoveForward(GLfloat dx, bool applyFix)
@@ -246,23 +301,24 @@ void Character::MoveForward(GLfloat dx, bool applyFix)
     if(applyFix)
         dx = this->gameObject->applyTimeFix(dx);
     
-    Point2D* charPosition = new Point2D(0, 0);
+    Vector3D* charPosition = new Vector3D(0, 0, 0);
     
     this->nextNPCState(CharacterPunchSignal::NONE);
     
     if(willColide(gameObject, dx)) return;
     
-    moveForwardTransform(dx)->apply(charPosition);
+    moveForwardTransform(dx)->apply3D(charPosition);
     
     this->gX = charPosition->x;
     this->gY = charPosition->y;
+    this->gZ = charPosition->z;
 }
 
 bool Character::willColideWithOtherPlayer(Character* another, GLfloat dx)
 {
     if(another == this) return false;
-    Point2D* thisPoint = new Point2D(0, 0);
-    moveForwardTransform(dx)->apply(thisPoint);
+    Vector3D* thisPoint = new Vector3D(0, 0, 0);
+    moveForwardTransform(dx)->apply3D(thisPoint);
     
     Circle thisCircle = Circle(thisPoint->x, thisPoint->y, this->torsoRadius);
     Circle anotherCircle = Circle(another->gX, another->gY, this->outsideRadius);
@@ -273,8 +329,8 @@ bool Character::willColideWithOtherPlayer(Character* another, GLfloat dx)
 void Character::AnotherCharacterIsWithinRadius(Character* another, GLfloat dx)
 {
     if(another == this) return;
-    Point2D* thisPoint = new Point2D(0, 0);
-    moveForwardTransform(dx)->apply(thisPoint);
+    Vector3D* thisPoint = new Vector3D(0, 0, 0);
+    moveForwardTransform(dx)->apply3D(thisPoint);
     
     Circle thisCircle = Circle(thisPoint->x, thisPoint->y, this->outsideRadius);
     Circle anotherCircle = Circle(another->gX, another->gY, another->outsideRadius);
@@ -290,8 +346,8 @@ void Character::AnotherCharacterIsWithinRadius(Character* another, GLfloat dx)
 bool Character::willColideWithGameWalls(GLfloat dx) {
     Rectangle rect = Rectangle(this->gameObject->arena.x, this->gameObject->arena.y, this->gameObject->arena.width, this->gameObject->arena.height);
 
-    Point2D* thisPoint = new Point2D(0, 0);
-    moveForwardTransform(dx)->apply(thisPoint);
+    Vector3D* thisPoint = new Vector3D(0, 0, 0);
+    moveForwardTransform(dx)->apply3D(thisPoint);
     Circle circ = Circle(thisPoint->x, thisPoint->y, this->torsoRadius);
 
     bool isIntersecting = Collision::circleInsideRectIntersect(circ, rect);
@@ -301,6 +357,7 @@ bool Character::willColideWithGameWalls(GLfloat dx) {
 
 bool Character::willColide(Game* game, GLfloat dx) {
     dx = this->gameObject->applyTimeFix(dx);
+//    return false;
     
     // Test aggresiveness
     AnotherCharacterIsWithinRadius(game->player1, dx);
@@ -318,8 +375,8 @@ void Character::hitDetection(Character* another) {
     if(another == this) return;
     
     if(this->punchState == CharacterPunchState::LEFT_PUNCH) {
-        Point2D* thisPoint = new Point2D(0, 0);
-        leftGloveTransform()->apply(thisPoint);
+        Vector3D* thisPoint = new Vector3D(0, 0, 0);
+        leftGloveTransform()->apply3D(thisPoint);
     
         Circle thisCircle = Circle(thisPoint->x, thisPoint->y, this->handRadius);
         Circle anotherCircle = Circle(another->gX, another->gY, this->torsoRadius);
@@ -330,8 +387,8 @@ void Character::hitDetection(Character* another) {
         }
         
     } else if(this->punchState == CharacterPunchState::RIGHT_PUNCH) {
-        Point2D* thisPoint = new Point2D(0, 0);
-        rightGloveTransform()->apply(thisPoint);
+        Vector3D* thisPoint = new Vector3D(0, 0, 0);
+        rightGloveTransform()->apply3D(thisPoint);
     
         Circle thisCircle = Circle(thisPoint->x, thisPoint->y, this->handRadius);
         Circle anotherCircle = Circle(another->gX, another->gY, another->torsoRadius);
@@ -346,6 +403,8 @@ void Character::hitDetection(Character* another) {
 
 void Character::RotateBody(GLfloat inc) {
     inc = this->gameObject->applyTimeFix(inc);
+    
+    cout << gTheta << endl;
     this->gTheta -= inc;
 }
 

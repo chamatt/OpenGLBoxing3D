@@ -115,6 +115,8 @@ void idle(void)
         game->player1->MoveForward(-inc);
     }
     
+//    cout << "Pos:" << game->player1->gX << game->player1->gY << game->player1->gZ << endl;
+    
     glutPostRedisplay();
 }
 

@@ -163,23 +163,25 @@ private:
     
     Transformation* moveForwardTransform(GLfloat dx) {
         Transformation* tr = new Transformation();
-        tr->translate2d(gX, gY);
-        tr->rotate2d(gTheta);
-        tr->translate2d(0, dx);
+//        tr->logMode(true);
+        tr->translate3d(gX, gY, gZ);
+        tr->rotate3d(gTheta, 0, 0, 1);
+        tr->translate3d(0, dx, 0);
         return tr;
     }
     
     Transformation* rightGloveTransform() {
         Transformation* tr = new Transformation();
+//        tr->logMode(true);
         
-        tr->translate2d(gX, gY);
-        tr->rotate2d(gTheta);
-        tr->translate2d(this->torsoRadius, 0);
-        tr->rotate2d(this->rightArmFirstJointAngle);
-        tr->translate2d(0, this->armLength);  /* Move to second left arm joint */
-        tr->rotate2d(this->rightArmSecondJointAngle);
-        tr->translate2d(0, this->foreArmLength);  /* Move to second left arm joint */
-        tr->translate2d(0, handRadius);  /* Move to second left arm joint */
+        tr->translate3d(gX, gY, gZ);
+        tr->rotate3d(gTheta, 0, 0, 1);
+        tr->translate3d(this->torsoRadius, 0, 0);
+        tr->rotate3d(this->rightArmFirstJointAngle, 0, 0, 1);
+        tr->translate3d(0, this->armLength, 0);  /* Move to second left arm joint */
+        tr->rotate3d(this->rightArmSecondJointAngle, 0, 0, 1);
+        tr->translate3d(0, this->foreArmLength, 0);  /* Move to second left arm joint */
+        tr->translate3d(0, handRadius, 0);  /* Move to second left arm joint */
         
         return tr;
     }
@@ -187,14 +189,14 @@ private:
     Transformation* leftGloveTransform() {
         Transformation* tr = new Transformation();
         
-        tr->translate2d(gX, gY);
-        tr->rotate2d(gTheta);
-        tr->translate2d(-this->torsoRadius, 0);
-        tr->rotate2d(this->leftArmFirstJointAngle);
-        tr->translate2d(0, this->armLength);  /* Move to second left arm joint */
-        tr->rotate2d(this->leftArmSecondJointAngle);
-        tr->translate2d(0, this->foreArmLength);  /* Move to second left arm joint */
-        tr->translate2d(0, handRadius);  /* Move to second left arm joint */
+        tr->translate3d(gX, gY, gZ);
+        tr->rotate3d(gTheta, 0, 0, 1);
+        tr->translate3d(-this->torsoRadius, 0, 0);
+        tr->rotate3d(this->leftArmFirstJointAngle, 0, 0, 1);
+        tr->translate3d(0, this->armLength, 0);  /* Move to second left arm joint */
+        tr->rotate3d(this->leftArmSecondJointAngle, 0, 0, 1);
+        tr->translate3d(0, this->foreArmLength, 0);  /* Move to second left arm joint */
+        tr->translate3d(0, handRadius, 0);  /* Move to second left arm joint */
         
         return tr;
     }
@@ -203,6 +205,7 @@ public:
     
     GLfloat gX;
     GLfloat gY;
+    GLfloat gZ;
     GLfloat gTheta;
     
     int hitScore = 0;
@@ -226,6 +229,7 @@ public:
     void setInitialPos(GLfloat x, GLfloat y, GLfloat angle) {
         this->gX = x;
         this->gY = y;
+        this->gZ = 0;
         this->gTheta = angle;
     }
     
