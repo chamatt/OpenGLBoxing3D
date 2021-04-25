@@ -55,10 +55,19 @@ void ResetKeyStatus()
 
 void init(void)
 {
+    
+   
+    
     ResetKeyStatus();
     // The color the windows will redraw. Its done to erase the previous frame.
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black, no opacity(alpha).
  
+    glShadeModel (GL_SMOOTH);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_DEPTH_TEST);
+    
     glMatrixMode(GL_PROJECTION); // Select the projection matrix    
     glOrtho(game->arena.x,     // X coordinate of left edge
             game->arena.x + game->arena.width,     // X coordinate of right edge

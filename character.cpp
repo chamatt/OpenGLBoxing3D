@@ -76,6 +76,26 @@ void Character::DrawCircle(GLint radius, Color color)
     glEnd();
 }
 
+void Character::DrawSphere(GLint radius, Color color) {
+    GLfloat materialEmission[] = { 0.00, 0.00, 0.00, 1.0};
+    GLfloat materialColor[] = { 0.0, 1.0, 0.0, 1.0};
+    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0};
+    GLfloat mat_shininess[] = { 128 };
+    glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, materialColor);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColor);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    glColor3f(1,0,0);
+    glutSolidSphere(radius, 20, 10);
+}
+
+
+//void DrawObj(double size)
+//{
+//
+//}
+
 void Character::DrawStroke(GLint radius, Color color)
 {
     float theta;
@@ -109,12 +129,12 @@ void Character::DrawLeftArms(GLfloat x, GLfloat y)
     
     glTranslatef(x, y, 0); /* Move to left arm base */
     glRotatef(this->leftArmFirstJointAngle, 0, 0, 1);
-    this->DrawCircle(this->armWidth/2, this->armsColor); /* Smooth joint */
+    this->DrawSphere(this->armWidth/2, this->armsColor); /* Smooth joint */
     this->DrawRectangle(this->armLength, this->armWidth, this->armsColor);
     
     glTranslatef(0, this->armLength, 0);  /* Move to second left arm joint */
     glRotatef(this->leftArmSecondJointAngle, 0, 0, 1);
-    this->DrawCircle(this->armWidth/2, this->armsColor); /* Smooth joint */
+    this->DrawSphere(this->armWidth/2, this->armsColor); /* Smooth joint */
     this->DrawRectangle(this->foreArmLength, this->armWidth, this->armsColor);
     
     glTranslatef(0, this->foreArmLength, 0);  /* Move to second right arm tip */
@@ -130,12 +150,12 @@ void Character::DrawRightArms(GLfloat x, GLfloat y)
     
     glTranslatef(x, y, 0); /* Move to right arm base */
     glRotatef(this->rightArmFirstJointAngle, 0, 0, 1);
-    this->DrawCircle(this->armWidth/2, this->armsColor); /* Smooth joint */
+    this->DrawSphere(this->armWidth/2, this->armsColor); /* Smooth joint */
     this->DrawRectangle(this->armLength, this->armWidth, this->armsColor);
     
     glTranslatef(0, this->armLength, 0);  /* Move to second right arm joint */
     glRotatef(this->rightArmSecondJointAngle, 0, 0, 1);
-    this->DrawCircle(this->armWidth/2, this->armsColor); /* Smooth joint */
+    this->DrawSphere(this->armWidth/2, this->armsColor); /* Smooth joint */
     this->DrawRectangle(this->foreArmLength, this->armWidth,  this->armsColor);
     
     glTranslatef(0, this->foreArmLength, 0);  /* Move to second right arm tip */
@@ -200,13 +220,13 @@ void Character::RotateRightArmToAngle(GLfloat angle)
 
 void Character::DrawHand()
 {
-    this->DrawCircle(handRadius, this->handColor);
+    this->DrawSphere(handRadius, this->handColor);
     this->DrawStroke(handRadius, this->handStroke);
 }
 
 void Character::DrawTorso()
 {
-    this->DrawCircle(this->torsoRadius, this->torsoColor);
+    this->DrawSphere(this->torsoRadius, this->torsoColor);
     this->DrawStroke(this->torsoRadius, this->torsoStroke);
 }
 void Character::DrawNose()
@@ -221,7 +241,7 @@ void Character::DrawNose()
     glRotatef(90, 0,0,1);
     // remove above
     
-    this->DrawCircle(this->noseRadius, this->noseColor);
+    this->DrawSphere(this->noseRadius, this->noseColor);
     this->DrawStroke(this->noseRadius, this->noseStroke);
     glPopMatrix();
 }
@@ -248,7 +268,8 @@ void Character::DrawCharacter(GLfloat x, GLfloat y)
     glPopMatrix();
     
     
-    // @TODO DEBUG DRAWING
+    // @TODO remove later
+    // DEBUG DRAWING
     
     
     //torso
@@ -256,7 +277,7 @@ void Character::DrawCharacter(GLfloat x, GLfloat y)
     Vector3D* torso = new Vector3D(0,0,0);
     moveForwardTransform(0)->apply3D(torso);
     glTranslatef(torso->x, torso->y, torso->z);
-    this->DrawCircle(this->noseRadius, this->armsColor);
+    this->DrawSphere(this->noseRadius, this->armsColor);
     
     glPopMatrix();
     
@@ -273,7 +294,7 @@ void Character::DrawCharacter(GLfloat x, GLfloat y)
     tr->apply3D(nose);
     
     glTranslatef(nose->x, nose->y, nose->z);
-    this->DrawCircle(this->noseRadius/2.0, this->armsColor);
+    this->DrawSphere(this->noseRadius/2.0, this->armsColor);
     
     glPopMatrix();
     
@@ -282,7 +303,7 @@ void Character::DrawCharacter(GLfloat x, GLfloat y)
     Vector3D* point = new Vector3D(0,0,0);
     rightGloveTransform()->apply3D(point);
     glTranslatef(point->x, point->y, point->z);
-    this->DrawCircle(this->noseRadius, this->armsColor);
+    this->DrawSphere(this->noseRadius, this->armsColor);
     glPopMatrix();
     
     
@@ -291,7 +312,7 @@ void Character::DrawCharacter(GLfloat x, GLfloat y)
     Vector3D* point2 = new Vector3D(0,0,0);
     leftGloveTransform()->apply3D(point2);
     glTranslatef(point2->x, point2->y, point2->z);
-    this->DrawCircle(this->noseRadius, this->noseColor);
+    this->DrawSphere(this->noseRadius, this->noseColor);
     glPopMatrix();
     
 }

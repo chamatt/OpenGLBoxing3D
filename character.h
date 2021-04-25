@@ -149,6 +149,7 @@ class Character {
 private:
     void DrawRectangle(GLint height, GLint width, Color color);
     void DrawCircle(GLint radius, Color color);
+    void DrawSphere(GLint radius, Color color);
     void DrawStroke(GLint radius, Color color);
     void DrawCircleDashed(GLint radius, Color color);
     void DrawWheel(GLfloat x, GLfloat y, GLfloat thetaWheel, Color color);
