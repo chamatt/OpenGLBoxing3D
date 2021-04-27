@@ -267,43 +267,43 @@ void Character::DrawCharacter(GLfloat x, GLfloat y)
     // DEBUG DRAWING
     
     
-    //torso
-    glPushMatrix();
-    Vector3D* torso = new Vector3D(0,0,0);
-    moveForwardTransform(0)->apply3D(torso);
-    glTranslatef(torso->x, torso->y, torso->z);
-    this->DrawSphere(this->noseRadius, this->armsColor);
+    // //torso
+    // glPushMatrix();
+    // Vector3D* torso = new Vector3D(0,0,0);
+    // moveForwardTransform(0)->apply3D(torso);
+    // glTranslatef(torso->x, torso->y, torso->z);
+    // this->DrawSphere(this->noseRadius, this->armsColor);
     
-    glPopMatrix();
+    // glPopMatrix();
     
-    //nose
-    glPushMatrix();
-    Vector3D* nose = new Vector3D(0,0,0);
-    auto tr = moveForwardTransform(torsoRadius + noseRadius);
+    // //nose
+    // glPushMatrix();
+    // Vector3D* nose = new Vector3D(0,0,0);
+    // auto tr = moveForwardTransform(torsoRadius + noseRadius);
     
-    tr->apply3D(nose);
+    // tr->apply3D(nose);
     
-    glTranslatef(nose->x, nose->y, nose->z);
-    this->DrawSphere(this->noseRadius/2.0, this->armsColor);
+    // glTranslatef(nose->x, nose->y, nose->z);
+    // this->DrawSphere(this->noseRadius/2.0, this->armsColor);
     
-    glPopMatrix();
+    // glPopMatrix();
     
-    //right glove
-    glPushMatrix();
-    Vector3D* point = new Vector3D(0,0,0);
-    rightGloveTransform()->apply3D(point);
-    glTranslatef(point->x, point->y, point->z);
-    this->DrawSphere(this->noseRadius, this->armsColor);
-    glPopMatrix();
+    // //right glove
+    // glPushMatrix();
+    // Vector3D* point = new Vector3D(0,0,0);
+    // rightGloveTransform()->apply3D(point);
+    // glTranslatef(point->x, point->y, point->z);
+    // this->DrawSphere(this->noseRadius, this->armsColor);
+    // glPopMatrix();
     
     
-    // left glove
-    glPushMatrix();
-    Vector3D* point2 = new Vector3D(0,0,0);
-    leftGloveTransform()->apply3D(point2);
-    glTranslatef(point2->x, point2->y, point2->z);
-    this->DrawSphere(this->noseRadius, this->noseColor);
-    glPopMatrix();
+    // // left glove
+    // glPushMatrix();
+    // Vector3D* point2 = new Vector3D(0,0,0);
+    // leftGloveTransform()->apply3D(point2);
+    // glTranslatef(point2->x, point2->y, point2->z);
+    // this->DrawSphere(this->noseRadius, this->noseColor);
+    // glPopMatrix();
     
 }
 

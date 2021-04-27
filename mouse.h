@@ -38,6 +38,8 @@ class Mouse
 {
 public:
     MouseStatus leftButton;
+    MouseStatus rightButton;
+    
     Point2D currentPosition = Point2D(0, 0);
 
     Mouse() {}

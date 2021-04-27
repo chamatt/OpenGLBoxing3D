@@ -83,6 +83,8 @@ enum CharacterPunchSignal {
 };
 
 class Character {
+
+public:
     Game* gameObject;
     
     DefaultColors defaultColors;
@@ -146,7 +148,6 @@ class Character {
         this->handStroke = defaultColors.handStroke;
     }
 
-private:
     void DrawRectangle(GLint height, GLint width, Color color);
     void DrawCircle(GLint radius, Color color);
     void DrawSphere(GLint radius, Color color);
@@ -165,7 +166,7 @@ private:
     Transformation* moveForwardTransform(GLfloat dx) {
         Transformation* tr = new Transformation();
 //        tr->logMode(true);
-        tr->translate3d(gX, gY, gZ);
+        tr->translate3d(gX, gY, gZ); 
         tr->rotate3d(gTheta, 0, 0, 1);
         tr->translate3d(0, dx, 0);
         return tr;
@@ -202,7 +203,6 @@ private:
         return tr;
     }
 
-public:
     
     GLfloat gX;
     GLfloat gY;

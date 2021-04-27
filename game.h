@@ -45,6 +45,13 @@ public:
     
     GLdouble currentTime, timeDiference;
 
+    int cameraNumber = 1;
+    int cameraAngle = 60;
+    double camXYAngle = 0;
+    double camXZAngle = 0;
+    int lastX = 0;
+    int lastY = 0;
+
     GLfloat applyTimeFix(GLfloat amount) {
         return amount * (timeDiference/20);
     }
@@ -99,15 +106,45 @@ public:
                   mouse.leftButton.setClickPosition(x,y);
                }
             }
+
+            if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+                lastX = x;
+                lastY = y;
+                mouse.rightButton.setIsPressed(true);
+            } 
+
+            if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP) {
+                mouse.rightButton.setIsPressed(false);
+            }
+
             glutPostRedisplay();
     }
     
     void mouseMovement(int x, int y)
     {
        y = 2*arena.y + arena.height - y;
-       mouse.setPosition(x, y);
-       glutPostRedisplay();
+       mouse.setPosition(x, y); 
+        
+
+        if (!mouse.rightButton.isPressed)
+            return;
+
+
+        camXYAngle += x - lastX;
+        // camXZAngle += y - lastY;
+        
+           
+        camXYAngle = (int)camXYAngle % 360;
+        // camXZAngle = (int)camXZAngle % 360;
+        
+        lastX = x;
+        lastY = y;
+
+        glutPostRedisplay();
     }
+
+    void setCamera();
+    void changeCamera(int angle, int w, int h);
 };
 
 #endif /* Game_hpp */

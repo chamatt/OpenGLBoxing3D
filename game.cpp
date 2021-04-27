@@ -102,6 +102,35 @@ void Game::keyPress(unsigned char key, int x, int y)
             player1->toggleShowHitmark();
             player2->toggleShowHitmark();
             break;
+         case '1':
+            cameraNumber = 1;
+            break;
+        case '2':
+            cameraNumber = 2;
+            break;
+        case '3':
+            cameraNumber = 3;
+            break;
+        case '+':
+        {
+            if(cameraNumber != 3) 
+                break;
+            int inc = cameraAngle >= 180 ? 0 : 1;
+            cameraAngle += inc;
+            changeCamera(cameraAngle, 
+                    glutGet(GLUT_WINDOW_WIDTH), 
+                    glutGet(GLUT_WINDOW_HEIGHT));
+            break;
+        }
+        case '-':
+        {
+            if(cameraNumber != 3) 
+                break;
+            int inc = cameraAngle <= 5 ? 0 : 1;
+            cameraAngle -= inc;
+            changeCamera(cameraAngle, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+            break;
+        }
         case 27 :
             if(gameIsOver)
              exit(0);
@@ -163,4 +192,87 @@ void Game::checkGameOver() {
     if(this->player1->hitScore >= this->maxScore || this->player2->hitScore >= this->maxScore) {
         gameOver();
     }
+}
+
+void Game :: setCamera(){
+    if(cameraNumber == 1){
+            Vector3D* inFrontOfNose = new Vector3D(0, 0, 0);
+            this->player1->moveForwardTransform(this->player1->torsoRadius + this->player1->noseRadius)->apply3D(inFrontOfNose);
+            Vector3D* inFrontOfNoseMais10 = new Vector3D(0, 0, 0);
+            this->player1->moveForwardTransform(this->player1->torsoRadius + this->player1->noseRadius + 10)->apply3D(inFrontOfNoseMais10);
+            gluLookAt( 
+                            inFrontOfNose->x,
+                            inFrontOfNose->y,
+                            inFrontOfNose->z,
+                            inFrontOfNoseMais10->x,
+                            inFrontOfNoseMais10->y,
+                            inFrontOfNoseMais10->z,
+                            0, 0, 1);
+    }else if(cameraNumber == 2){
+        Vector3D* foreArm = new Vector3D(0, 0, 0);
+        Vector3D* hand = new Vector3D(0, 0, 0);
+
+        Transformation* tr = new Transformation();
+        tr->translate3d(this->player1->gX, this->player1->gY, 0);
+        tr->rotate3d(this->player1->gTheta, 0, 0, 1);
+        tr->translate3d(-this->player1->torsoRadius, 0, 0);
+        tr->rotate3d(this->player1->leftArmFirstJointAngle, 0, 0, 1);
+        tr->translate3d(0, this->player1->armLength, 0);
+        tr->rotate3d(this->player1->leftArmSecondJointAngle, 0, 0, 1);
+        tr->translate3d(0, this->player1->foreArmLength/2, this->player1->handRadius);
+        tr->apply3D(foreArm);
+
+        tr->translate3d(0, this->player1->foreArmLength/2, 0);
+        tr->translate3d(0, this->player1->handRadius, 0);
+        tr->apply3D(hand);
+
+        gluLookAt( 
+                            foreArm->x,
+                            foreArm->y,
+                            foreArm->z,
+                            hand->x,
+                            hand->y,
+                            hand->z,
+                            0, 0, 1);
+
+    }else{
+        Vector3D* vet = new Vector3D(0, 0, 0);
+        
+        Transformation* tr = new Transformation();
+        tr->translate3d(this->player1->gX, this->player1->gY, 0);
+        tr->translate3d(0, 0, 500);
+        tr->rotate3d(this->player1->gTheta, 0, 0, 1);
+        tr->translate3d(0, -500, 0);
+        tr->apply3D(vet);
+
+        Vector3D* up = new Vector3D(0, 1, 0);
+        Transformation* tr2 = new Transformation();
+        tr2->rotate3d(this->player1->gTheta, 0, 0, 1);
+        
+        tr2->apply3D(up);
+        
+         gluLookAt( 
+                            vet->x,
+                            vet->y,
+                            vet->z,
+                            this->player1->gX,
+                            this->player1->gY,
+                            this->player1->gZ,
+                            up->x, up->y, up->z);                            
+    }
+}
+
+void Game:: changeCamera(int angle, int w, int h)
+{
+    glMatrixMode (GL_PROJECTION);
+
+    glLoadIdentity ();
+
+    gluPerspective (angle, 
+            (GLfloat)w / (GLfloat)h, 1, this->arena.width + this->arena.height);
+
+    glMatrixMode (GL_MODELVIEW);
+
+    glutPostRedisplay();
+
 }
