@@ -211,7 +211,7 @@ public:
     
     int hitScore = 0;
     
-    bool characterIsEnabled = true;
+    bool characterIsEnabled = false;
     void toggleCharacterEnabled() {
        this->characterIsEnabled = !characterIsEnabled;
     }

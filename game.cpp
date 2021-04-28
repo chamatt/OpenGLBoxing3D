@@ -194,6 +194,8 @@ void Game::checkGameOver() {
     }
 }
 
+
+
 void Game :: setCamera(){
     if(cameraNumber == 1){
             Vector3D* inFrontOfNose = new Vector3D(0, 0, 0);
@@ -236,21 +238,24 @@ void Game :: setCamera(){
                             0, 0, 1);
 
     }else{
+
         Vector3D* vet = new Vector3D(0, 0, 0);
-        
+
         Transformation* tr = new Transformation();
         tr->translate3d(this->player1->gX, this->player1->gY, 0);
-        tr->translate3d(0, 0, 500);
-        tr->rotate3d(this->player1->gTheta, 0, 0, 1);
-        tr->translate3d(0, -500, 0);
+        tr->rotate3d(this->player1->gTheta + camXYAngle, 0, 0, 1);
+        tr->rotate3d(camXZAngle, 1, 0, 0);
+        tr->translate3d(0, -500, 500);
         tr->apply3D(vet);
 
         Vector3D* up = new Vector3D(0, 1, 0);
         Transformation* tr2 = new Transformation();
-        tr2->rotate3d(this->player1->gTheta, 0, 0, 1);
-        
+        tr2->rotate3d(this->player1->gTheta + camXYAngle, 0, 0, 1);
+        tr->rotate3d(camXZAngle, 1, 0, 0);
         tr2->apply3D(up);
         
+        cout << camXZAngle << endl;
+
          gluLookAt( 
                             vet->x,
                             vet->y,
@@ -258,7 +263,8 @@ void Game :: setCamera(){
                             this->player1->gX,
                             this->player1->gY,
                             this->player1->gZ,
-                            up->x, up->y, up->z);                            
+                            up->x, up->y, up->z);  
+
     }
 }
 
@@ -276,3 +282,5 @@ void Game:: changeCamera(int angle, int w, int h)
     glutPostRedisplay();
 
 }
+
+

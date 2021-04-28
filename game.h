@@ -131,11 +131,11 @@ public:
 
 
         camXYAngle += x - lastX;
-        // camXZAngle += y - lastY;
+        camXZAngle += y - lastY;
         
            
         camXYAngle = (int)camXYAngle % 360;
-        // camXZAngle = (int)camXZAngle % 360;
+        camXZAngle = Util :: clamp(camXZAngle, -60, 60);
         
         lastX = x;
         lastY = y;

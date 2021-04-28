@@ -174,7 +174,7 @@ void Transformation::rotate3d(GLfloat angle, GLfloat x, GLfloat y, GLfloat z){
         {0,        0,         1,  0},
         {0,        0,         0,  1}
     };
-
+   
     if(x) {
         matrixMultiply(rotationXMatrix, 4);
     }

@@ -78,7 +78,7 @@ void renderScene(void)
         game->player1->Draw();
         game->player2->Draw();
 
-        glPushMatrix();
+         glPushMatrix();
             glTranslatef(game->arena.x + game->arena.width/2, game->arena.y + game->arena.height/2, 0);
             DrawAxes();
         glPopMatrix();
@@ -204,7 +204,7 @@ int main(int argc, char *argv[])
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
  
-    glutInitWindowSize(game->arena.width, game->arena.height);
+    glutInitWindowSize(500, 500);
     glutInitWindowPosition(150,50);
     glutCreateWindow("Boxing 2D");
  
