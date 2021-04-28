@@ -126,19 +126,17 @@ public:
        mouse.setPosition(x, y); 
         
 
-        if (!mouse.rightButton.isPressed)
-            return;
-
-
-        camXYAngle += x - lastX;
-        camXZAngle += y - lastY;
-        
-           
-        camXYAngle = (int)camXYAngle % 360;
-        camXZAngle = Util :: clamp(camXZAngle, -60, 60);
-        
-        lastX = x;
-        lastY = y;
+        if (mouse.rightButton.isPressed){
+            camXYAngle += x - lastX;
+            camXZAngle += y - lastY;
+            
+            
+            camXYAngle = (int)camXYAngle % 360;
+            camXZAngle = Util :: clamp(camXZAngle, -60, 60);
+            
+            lastX = x;
+            lastY = y;
+        }
 
         glutPostRedisplay();
     }

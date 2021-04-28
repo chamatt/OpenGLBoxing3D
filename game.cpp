@@ -238,7 +238,7 @@ void Game :: setCamera(){
                             0, 0, 1);
 
     }else{
-
+    
         Vector3D* vet = new Vector3D(0, 0, 0);
 
         Transformation* tr = new Transformation();
@@ -251,7 +251,7 @@ void Game :: setCamera(){
         Vector3D* up = new Vector3D(0, 1, 0);
         Transformation* tr2 = new Transformation();
         tr2->rotate3d(this->player1->gTheta + camXYAngle, 0, 0, 1);
-        tr->rotate3d(camXZAngle, 1, 0, 0);
+        tr2->rotate3d(camXZAngle, 1, 0, 0);
         tr2->apply3D(up);
         
         cout << camXZAngle << endl;

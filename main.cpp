@@ -78,10 +78,10 @@ void renderScene(void)
         game->player1->Draw();
         game->player2->Draw();
 
-         glPushMatrix();
-            glTranslatef(game->arena.x + game->arena.width/2, game->arena.y + game->arena.height/2, 0);
-            DrawAxes();
-        glPopMatrix();
+        //  glPushMatrix();
+        //     glTranslatef(game->arena.x + game->arena.width/2, game->arena.y + game->arena.height/2, 0);
+        //     DrawAxes();
+        // glPopMatrix();
         // game->PrintScore();
     }
     
