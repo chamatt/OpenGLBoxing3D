@@ -98,13 +98,24 @@ public:
     Color handStroke;
     
     GLfloat armLength;
-    GLfloat foreArmLength;
     GLfloat armWidth;
+    GLfloat foreArmLength;
+
+    GLfloat legLength;
+    GLfloat legWidth;
     
     GLfloat torsoRadius;
     GLfloat handRadius;
     GLfloat noseRadius;
     GLfloat outsideRadius;
+    GLfloat headRadius;
+    GLfloat jointRadius;
+
+    bool moveLeftLeg = false;
+    GLfloat leftLegAngle = 0;
+    GLfloat rightLegAngle = 0;
+    GLfloat leftSecondLegAngle = 0;
+    GLfloat rightSecondLegAngle = 0;
     
     GLfloat leftArmFirstJointAngle = MIN_ANGLE;
     GLfloat leftArmSecondJointAngle = -MIN_ANGLE;
@@ -162,6 +173,9 @@ public:
     void DrawTorso();
     void DrawNose();
     void DrawHand();
+    void DrawHead(GLfloat x, GLfloat y, GLfloat z);
+    void DrawLeftLeg();
+    void DrawRightLeg();
     void DrawCharacter(GLfloat x, GLfloat y);
     
     Transformation* moveForwardTransform(GLfloat dx) {
@@ -349,6 +363,8 @@ public:
     }
     
     bool characterIsMoving();
+    void walkMovement(GLfloat inc);
+    void resetLegAngles();
 };
 
 #endif /* character_hpp */

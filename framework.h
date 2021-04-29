@@ -54,6 +54,16 @@ public:
         return clamped_value;
     }
 
+    static bool equal(GLfloat a, GLfloat b){
+        GLfloat epsilon = 1e-7;
+        return fabs(a - b) < epsilon;
+    }
+
+    static bool lt(GLfloat a, GLfloat b){
+        GLfloat epsilon = 1e-7;
+        return a + epsilon < b; 
+    }
+
 };
 
 

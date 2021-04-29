@@ -52,6 +52,8 @@ public:
     int lastX = 0;
     int lastY = 0;
 
+    bool spotLight = false;
+
     GLfloat applyTimeFix(GLfloat amount) {
         return amount * (timeDiference/20);
     }
@@ -145,6 +147,7 @@ public:
 
     void setCamera();
     void changeCamera(int angle, int w, int h);
+    void setIlumination();
 };
 
 #endif /* Game_hpp */

@@ -47,22 +47,21 @@ void Game::DrawCuboid(GLint width, GLint height, GLint thickness){
 
 
 void Game::DrawArena(GLfloat x, GLfloat y, GLfloat z) {
+    GLfloat materialEmission[] = { 0.00, 0.00, 0.00, 1.0};
+    GLfloat materialColor[] = { 0.0, 0.0, 1.0, 1.0};
+    GLfloat mat_specular[] = { 0.5, 0.5, 0.5, 1.0};
+    GLfloat mat_shininess[] = { 64 };
+    glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, materialColor);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColor);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    
+    GLfloat thickness = this->player1->torsoRadius * 2;
+
     glPushMatrix();
-  GLfloat materialEmission[] = { 0.00, 0.00, 0.00, 1.0};
-   GLfloat materialColor[] = { 0.0, 0.0, 1.0, 1.0};
-   GLfloat mat_specular[] = { 0.5, 0.5, 0.5, 1.0};
-   GLfloat mat_shininess[] = { 64 };
-   glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
-   glMaterialfv(GL_FRONT, GL_AMBIENT, materialColor);
-   glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColor);
-   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-
-
-    glTranslatef(x,y,z - (this->player1->torsoRadius *2 + this->player1->armLength * 2));
-    // glRotatef(90, 0,0,1);
-    DrawCuboid(this->arena.width, this->arena.height, this->player1->torsoRadius * 2);
-
+        glTranslatef(x,y,z - (this->player1->torsoRadius + this->player1->legLength*2 + thickness/2 - 2*this->player1->jointRadius));
+        DrawCuboid(this->arena.width, this->arena.height, thickness);
     glPopMatrix();
 }
 
@@ -161,6 +160,9 @@ void Game::keyPress(unsigned char key, int x, int y)
             changeCamera(cameraAngle, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
             break;
         }
+        case 'n':
+            spotLight = !spotLight;
+            break;
         case 27 :
             if(gameIsOver)
              exit(0);
@@ -229,9 +231,16 @@ void Game::checkGameOver() {
 void Game :: setCamera(){
     if(cameraNumber == 1){
             Vector3D* inFrontOfNose = new Vector3D(0, 0, 0);
-            this->player1->moveForwardTransform(this->player1->torsoRadius + this->player1->noseRadius)->apply3D(inFrontOfNose);
+            this->player1->moveForwardTransform(this->player1->headRadius)->apply3D(inFrontOfNose);
+            Transformation* tr = new Transformation();
+            tr->translate3d(0, 0, this->player1->headRadius + this->player1->torsoRadius);
+
             Vector3D* inFrontOfNoseMais10 = new Vector3D(0, 0, 0);
-            this->player1->moveForwardTransform(this->player1->torsoRadius + this->player1->noseRadius + 10)->apply3D(inFrontOfNoseMais10);
+            this->player1->moveForwardTransform(this->player1->headRadius + 10)->apply3D(inFrontOfNoseMais10);
+
+            tr->apply3D(inFrontOfNose);
+            tr->apply3D(inFrontOfNoseMais10);
+
             gluLookAt( 
                             inFrontOfNose->x,
                             inFrontOfNose->y,
@@ -284,9 +293,7 @@ void Game :: setCamera(){
         tr2->rotate3d(camXZAngle, 1, 0, 0);
         tr2->apply3D(up);
         
-        cout << camXZAngle << endl;
-
-         gluLookAt( 
+        gluLookAt( 
                             vet->x,
                             vet->y,
                             vet->z,
@@ -311,6 +318,39 @@ void Game:: changeCamera(int angle, int w, int h)
 
     glutPostRedisplay();
 
+}
+
+void Game :: setIlumination(){
+    if(spotLight){
+        glDisable(GL_LIGHT0);
+        glEnable(GL_LIGHT1);
+        
+        GLfloat position_params[] = {this->player1->gX, this->player1->gY, this->player1->gZ + this->player1->torsoRadius + 2*this->player1->headRadius + 500, 1.0};
+        glLightfv(GL_LIGHT1, GL_POSITION, position_params);
+
+        GLfloat ambient_params[] = {0.2, 0.2, 0.2, 1};
+        glLightfv(GL_LIGHT1, GL_AMBIENT, ambient_params);
+
+        GLfloat diffuse_params[] = {1, 1, 1, 1};
+        glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse_params);
+        
+        GLfloat spotCutoff_params[] = {45.0};
+        glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, spotCutoff_params); 
+        glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);
+
+        GLfloat spotDirection_params[] = {0, 0, -1};
+        glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotDirection_params);
+
+    }else{
+        glDisable(GL_LIGHT1);
+        glEnable(GL_LIGHT0);
+        GLfloat ambient_params[] = {0.2, 0.2, 0.2, 1};
+        glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_params);
+
+        GLfloat position_params[] = {this->arena.x + this->arena.width/2, this->arena.y + this->arena.height/2, 500, 0};
+        glLightfv(GL_LIGHT0, GL_POSITION, position_params);
+    }
+    
 }
 
 

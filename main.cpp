@@ -60,18 +60,16 @@ void DrawAxes()
     
 }
 
+
 void renderScene(void)
 {   
-    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    glClearColor (0.0,0.0,0.0, 1.0);
+    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-     // Clear the screen.
-     glClearColor (0.0,0.0,0.0, 1.0);
-     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-     game->setCamera();
+    game->setIlumination();
+    game->setCamera();
 
     if(game->gameIsOver){
         game->DrawGameOver();
@@ -87,6 +85,8 @@ void renderScene(void)
         // game->PrintScore();
     }
     
+    if(!(game->player1->characterIsMoving()))
+        game->player1->resetLegAngles();
 
      glutSwapBuffers(); // Desenha the new frame of the game->
 }
