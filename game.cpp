@@ -36,6 +36,36 @@ void Game::Output(int x, int y, Color color, string str)
   }
 }
 
+void Game::DrawCuboid(GLint width, GLint height, GLint thickness){
+    GLfloat color_r[] = {1,0,0, 1};
+        glPushMatrix();
+                glColor3fv(color_r);
+                glScalef(width, height,thickness);
+                glutSolidCube(1.0);
+        glPopMatrix();
+}
+
+
+void Game::DrawArena(GLfloat x, GLfloat y, GLfloat z) {
+    glPushMatrix();
+  GLfloat materialEmission[] = { 0.00, 0.00, 0.00, 1.0};
+   GLfloat materialColor[] = { 0.0, 0.0, 1.0, 1.0};
+   GLfloat mat_specular[] = { 0.5, 0.5, 0.5, 1.0};
+   GLfloat mat_shininess[] = { 64 };
+   glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+   glMaterialfv(GL_FRONT, GL_AMBIENT, materialColor);
+   glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColor);
+   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+
+    glTranslatef(x,y,z - (this->player1->torsoRadius *2 + this->player1->armLength * 2));
+    // glRotatef(90, 0,0,1);
+    DrawCuboid(this->arena.width, this->arena.height, this->player1->torsoRadius * 2);
+
+    glPopMatrix();
+}
+
 void Game::DrawGameOver()
 {
     auto calcSize = [](string newStr) -> int { return (newStr.size() * 9)/2; };

@@ -70,6 +70,7 @@ void renderScene(void)
      glClearColor (0.0,0.0,0.0, 1.0);
      glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
      game->setCamera();
 
     if(game->gameIsOver){
@@ -77,6 +78,7 @@ void renderScene(void)
     } else {
         game->player1->Draw();
         game->player2->Draw();
+        game->DrawArena(game->arena.x + game->arena.width/2, game->arena.y + game->arena.height/2, 0);
 
         //  glPushMatrix();
         //     glTranslatef(game->arena.x + game->arena.width/2, game->arena.y + game->arena.height/2, 0);
@@ -122,6 +124,8 @@ void init(void)
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_NORMALIZE);
+
     
     // glMatrixMode(GL_PROJECTION); // Select the projection matrix    
     // glOrtho(game->arena.x,     // X coordinate of left edge

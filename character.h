@@ -149,6 +149,7 @@ public:
     }
 
     void DrawRectangle(GLint height, GLint width, Color color);
+    void DrawCuboid(GLint height, GLint width, GLint thickness, Color color);
     void DrawCircle(GLint radius, Color color);
     void DrawSphere(GLint radius, Color color);
     void DrawStroke(GLint radius, Color color);

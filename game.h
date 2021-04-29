@@ -87,7 +87,9 @@ public:
     bool isKeyPressed(int key) {
         return keyStatus[key];
     }
-    
+
+    void DrawCuboid(GLint height, GLint width, GLint thickness);
+    void DrawArena(GLfloat x, GLfloat y, GLfloat z) ;
     void setPlayerStartPosition(Character* pl, GLfloat x, GLfloat y, GLfloat angle);
     
     void mouseEvent(int button, int state, int x, int y)
