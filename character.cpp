@@ -19,7 +19,7 @@ Character::Character(Game* game, GLfloat size){
     handColor = defaultColors.handColor;
     handStroke = defaultColors.handStroke;
     
-    this->torsoRadius = size;
+    this->torsoRadius = size * 0.8;
     this->handRadius = 0.45 * size;
     this->noseRadius = size / 4;
     this->outsideRadius = size * 4.0;
@@ -33,6 +33,14 @@ Character::Character(Game* game, GLfloat size){
     this->legWidth = this->armWidth * 0.5;
 
     this->jointRadius = this->armWidth/2;
+
+    GLfloat space = 10;
+
+    this->hand = new Sphere(this->handRadius, space);
+    this->head = new Sphere(this->headRadius, space);
+    this->torso = new Sphere(this->torsoRadius, space);
+    this->armJoint = new Sphere(this->jointRadius, space);
+    this->legJoint = new Sphere(this->jointRadius * 0.85, space);
 };
 
 Character::Character(Game* game, GLfloat size, Point2D position, GLfloat angle){
@@ -42,7 +50,7 @@ Character::Character(Game* game, GLfloat size, Point2D position, GLfloat angle){
     handColor = defaultColors.handColor;
     handStroke = defaultColors.handStroke;
     
-    this->torsoRadius = 0.8 * size;
+    this->torsoRadius = 0.8 * size * 0.8;
     this->handRadius = 0.5 * size;
     this->noseRadius = size / 4;
     this->outsideRadius = size * 3.0;
@@ -60,6 +68,14 @@ Character::Character(Game* game, GLfloat size, Point2D position, GLfloat angle){
     this->gX = position.x;
     this->gY = position.y;
     this->gTheta = angle;
+
+    GLfloat space = 10;
+
+    this->hand = new Sphere(this->handRadius, space);
+    this->head = new Sphere(this->headRadius, space);
+    this->torso = new Sphere(this->torsoRadius, space);
+    this->armJoint = new Sphere(this->jointRadius, space);
+    this->legJoint = new Sphere(this->jointRadius * 0.85, space);
 };
 
 void Character::DrawRectangle(GLint height, GLint width, Color color)
@@ -108,7 +124,7 @@ void Character::DrawCircle(GLint radius, Color color)
     glEnd();
 }
 
-void Character::DrawSphere(GLint radius, Color color) {
+void Character::DrawSphere(Sphere* sphere, Color color, Texture* texture) {
     GLfloat materialEmission[] = { 0.00, 0.00, 0.00, 1.0};
     GLfloat materialColor[] = { 0.0, 1.0, 0.0, 1.0};
     GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0};
@@ -119,7 +135,26 @@ void Character::DrawSphere(GLint radius, Color color) {
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
     glColor3f(1,0,0);
-    glutSolidSphere(radius, 20, 10);
+
+    if(texture){
+        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR );
+        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR );
+
+        glBindTexture (GL_TEXTURE_2D, texture->texture);
+    }
+    
+    glBegin (GL_TRIANGLE_STRIP);
+    for ( int i = 0; i <sphere->numberOfVertices; i++){
+        glNormal3f(sphere->vertices[i]->nX, sphere->vertices[i]->nY, sphere->vertices[i]->nZ);
+
+        if(texture){
+            glTexCoord2f(sphere->vertices[i]->U, sphere->vertices[i]->V);
+        }
+
+        glVertex3f (sphere->vertices[i]->X, sphere->vertices[i]->Y, sphere->vertices[i]->Z);
+    }
+    glEnd();
+
 }
 
 
@@ -161,12 +196,12 @@ void Character::DrawLeftArms(GLfloat x, GLfloat y)
     
     glTranslatef(x, y, 0); /* Move to left arm base */
     glRotatef(this->leftArmFirstJointAngle, 0, 0, 1);
-    this->DrawSphere(this->jointRadius, this->armsColor); /* Smooth joint */
+    this->DrawSphere(this->armJoint, this->armsColor); /* Smooth joint */
     this->DrawCuboid(this->armLength, this->armWidth, 7, this->armsColor);
     
     glTranslatef(0, this->armLength, 0);  /* Move to second left arm joint */
     glRotatef(this->leftArmSecondJointAngle, 0, 0, 1);
-    this->DrawSphere(this->jointRadius, this->armsColor); /* Smooth joint */
+    this->DrawSphere(this->armJoint, this->armsColor); /* Smooth joint */
     this->DrawCuboid(this->foreArmLength, this->armWidth, 7, this->armsColor);
     
     glTranslatef(0, this->foreArmLength, 0);  /* Move to second right arm tip */
@@ -182,12 +217,12 @@ void Character::DrawRightArms(GLfloat x, GLfloat y)
     
     glTranslatef(x, y, 0); /* Move to right arm base */
     glRotatef(this->rightArmFirstJointAngle, 0, 0, 1);
-    this->DrawSphere(this->jointRadius, this->armsColor); /* Smooth joint */
+    this->DrawSphere(this->armJoint, this->armsColor); /* Smooth joint */
     this->DrawCuboid(this->armLength, this->armWidth, 7, this->armsColor);
     
     glTranslatef(0, this->armLength, 0);  /* Move to second right arm joint */
     glRotatef(this->rightArmSecondJointAngle, 0, 0, 1);
-    this->DrawSphere(this->jointRadius, this->armsColor); /* Smooth joint */
+    this->DrawSphere(this->armJoint, this->armsColor); /* Smooth joint */
     this->DrawCuboid(this->foreArmLength, this->armWidth, 7, this->armsColor);
 
     glTranslatef(0, this->foreArmLength, 0);  /* Move to second right arm tip */
@@ -252,32 +287,30 @@ void Character::RotateRightArmToAngle(GLfloat angle)
 
 void Character::DrawHand()
 {
-    this->DrawSphere(handRadius, this->handColor);
-    // this->DrawStroke(handRadius, this->handStroke);
+    this->DrawSphere(this->hand, this->handColor);
 }
 
 void Character::DrawTorso()
-{
-    this->DrawSphere(this->torsoRadius*0.8, this->torsoColor);
-    // this->DrawStroke(this->torsoRadius, this->torsoStroke);
+{   
+    this->DrawSphere(this->torso, this->torsoColor, this->torsoTexture);
 }
-void Character::DrawNose()
-{
-    glPushMatrix();
-    glTranslatef(0, this->torsoRadius, 0);
+
+// void Character::DrawNose()
+// {
+//     glPushMatrix();
+//     glTranslatef(0, this->torsoRadius, 0);
     
-    glTranslatef(0, this->noseRadius, 0);
+//     glTranslatef(0, this->noseRadius, 0);
     
-    this->DrawSphere(this->noseRadius, this->noseColor);
-    // this->DrawStroke(this->noseRadius, this->noseStroke);
-    glPopMatrix();
-}
+//     this->DrawSphere(this->noseRadius, this->noseColor);
+//     glPopMatrix();
+// }
 
 void Character :: DrawHead(GLfloat x, GLfloat y, GLfloat z){
     glPushMatrix();
 
     glTranslatef(x, y, z);
-    this->DrawSphere(this->headRadius, this->torsoColor);
+    this->DrawSphere(this->head, this->torsoColor);
 
     glPopMatrix();
 }
@@ -288,7 +321,7 @@ void Character :: DrawLeftLeg(){
         glRotatef(90 - leftLegAngle, 1, 0, 0); //Use this angle to rotate the whole leg
         this->DrawCuboid(this->legLength, this->legWidth, 10, this->armsColor);
         glRotatef(-90, 1, 0, 0);
-        this->DrawSphere(this->jointRadius * 0.85, this->armsColor); //Smooth joint
+        this->DrawSphere(this->legJoint, this->armsColor); //Smooth joint
         glRotatef(-90 - this->leftSecondLegAngle, 1, 0, 0);   //Use this angle to rotate the "second leg"
         this->DrawCuboid(this->legLength, this->legWidth, 10, this->armsColor);
     glPopMatrix();
@@ -300,7 +333,7 @@ void Character :: DrawRightLeg(){
         glRotatef(90 - rightLegAngle, 1, 0, 0);
         this->DrawCuboid(this->legLength, this->legWidth, 10, this->armsColor);
         glRotatef(-90, 1, 0, 0);
-        this->DrawSphere(this->jointRadius * 0.85, this->armsColor); //Smooth joint
+        this->DrawSphere(this->legJoint, this->armsColor); //Smooth joint
         glRotatef(-90 - rightSecondLegAngle, 1, 0, 0);
         this->DrawCuboid(this->legLength, this->legWidth, 10, this->armsColor);
     glPopMatrix();
@@ -312,12 +345,12 @@ void Character::DrawCharacter(GLfloat x, GLfloat y)
         glTranslatef(x, y, 0);              //Move to character position
         glRotatef(this->gTheta, 0, 0, 1);   //Rotate character
         
-        this->DrawHead(0, 0, this->torsoRadius);
+        // this->DrawHead(0, 0, this->torsoRadius);
         this->DrawTorso();
-        this->DrawLeftArms(-this->torsoRadius, 0);
-        this->DrawRightArms(this->torsoRadius, 0);
-        this->DrawLeftLeg();
-        this->DrawRightLeg();
+        // this->DrawLeftArms(-this->torsoRadius, 0);
+        // this->DrawRightArms(this->torsoRadius, 0);
+        // this->DrawLeftLeg();
+        // this->DrawRightLeg();
 
         if(showOutsideRadius){
             this->DrawCircleDashed(outsideRadius, Color(255, 255, 255));
@@ -562,4 +595,5 @@ void Character :: resetLegAngles(){
     leftLegAngle = 0;
     rightLegAngle = 0;
     leftSecondLegAngle = 0;
+    rightSecondLegAngle = 0;
 }

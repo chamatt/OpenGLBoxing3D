@@ -15,6 +15,8 @@
 #include <iostream>
 #include <vector>
 
+#include "imageloader.h"
+
 #define PI 3.14
 
 using namespace std;
@@ -256,6 +258,88 @@ class Transformation {
         void apply3D(Vector3D* vector);
     
         void logMode(bool state);
+};
+
+class Texture{
+public:
+    GLuint texture;
+    void LoadTextureRAW( const char * filename );
+};
+
+class Vertice{
+public:
+     //Vertex coordinate
+    GLfloat X;
+    GLfloat Y;
+    GLfloat Z;
+    
+    //Vertex normal 
+    GLfloat nX;
+    GLfloat nY;
+    GLfloat nZ;
+    
+    //Vertex texture coordinate
+    GLfloat U;
+    GLfloat V;
+};
+
+class Sphere{
+private:
+    void calculateCoordinates(GLfloat current_v, GLfloat current_h, int idx){
+        this->vertices[idx]->X = radius * sin(current_h / 180 * M_PI) * sin(current_v / 180 * M_PI);   
+        this->vertices[idx]->Y = radius * cos(current_h / 180 * M_PI) * sin(current_v / 180 * M_PI);
+        this->vertices[idx]->Z = radius * cos(current_v / 180 * M_PI);
+        this->vertices[idx]->V = current_v / 180;
+        this->vertices[idx]->U = current_h / 360;
+        GLfloat norm = sqrt(this->vertices[idx]->X * this->vertices[idx]->X +
+            this->vertices[idx]->Y * this->vertices[idx]->Y +
+            this->vertices[idx]->Z * this->vertices[idx]->Z);
+
+        this->vertices[idx]->nX = this->vertices[idx]->X/norm;
+        this->vertices[idx]->nY = this->vertices[idx]->Y/norm;
+        this->vertices[idx]->nZ = this->vertices[idx]->Z/norm;
+    }
+public:
+    vector <Vertice*> vertices;
+    int numberOfVertices;
+    GLfloat radius;
+    Sphere(GLfloat radius, GLfloat space){
+        this->radius = radius;
+        this->numberOfVertices = (180 / space) * (2 + 360 / (2*space)) * 4;
+        this->vertices.resize(numberOfVertices);
+
+        for(int i=0;i<this->numberOfVertices;i++)
+            vertices[i] = new Vertice();
+
+        int idx = 0;
+
+        for(GLfloat v = 0;v <= 180-space; v += space)
+            for(GLfloat h = 0;h <= 360+2*space; h += 2*space){
+                GLfloat current_v = v;
+                GLfloat current_h = h;
+                calculateCoordinates(current_v, current_h, idx);
+                
+                idx++;
+
+                current_v = v + space;
+                current_h = h;
+                calculateCoordinates(current_v, current_h, idx);
+
+                idx++;
+
+                current_v = v;
+                current_h = h + space;
+                calculateCoordinates(current_v, current_h, idx);
+
+                idx++;
+
+                current_v = v + space;
+                current_h = h + space;
+                calculateCoordinates(current_v, current_h, idx);
+
+                idx++;
+            }
+    }
 };
 
 

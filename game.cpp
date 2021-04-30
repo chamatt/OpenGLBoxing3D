@@ -48,7 +48,7 @@ void Game::DrawCuboid(GLint width, GLint height, GLint thickness){
 
 void Game::DrawArena(GLfloat x, GLfloat y, GLfloat z) {
     GLfloat materialEmission[] = { 0.00, 0.00, 0.00, 1.0};
-    GLfloat materialColor[] = { 0.0, 0.0, 1.0, 1.0};
+    GLfloat materialColor[] = { 0.0, 0.501960784, 0, 1.0};
     GLfloat mat_specular[] = { 0.5, 0.5, 0.5, 1.0};
     GLfloat mat_shininess[] = { 64 };
     glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
@@ -60,9 +60,83 @@ void Game::DrawArena(GLfloat x, GLfloat y, GLfloat z) {
     GLfloat thickness = this->player1->torsoRadius * 2;
 
     glPushMatrix();
-        glTranslatef(x,y,z - (this->player1->torsoRadius + this->player1->legLength*2 + thickness/2 - 2*this->player1->jointRadius));
+        glTranslatef(x,y,z -this->player1->torsoRadius - this->player1->legLength/2 - this->player1->legLength - thickness/2 - 0.5);
         DrawCuboid(this->arena.width, this->arena.height, thickness);
     glPopMatrix();
+
+    glPushMatrix();
+        GLfloat centerX = this->arena.x;
+        GLfloat centerY = this->arena.y;
+        glTranslatef(centerX, centerY, 0);
+        glTranslatef(0, 0, -this->player1->torsoRadius - this->player1->legLength/2 - this->player1->legLength);
+        this->DrawFootballField(footballFieldTexture);
+    glPopMatrix();
+
+}
+
+void Game :: DrawFootballField(Texture* texture){
+    GLfloat materialEmission[] = { 0, 0, 0, 1};
+    GLfloat materialColorA[] = { 0, 1, 1, 1};
+    GLfloat materialColorD[] = { 10, 1.0, 1.0, 1};
+    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1};
+    GLfloat mat_shininess[] = { 100.0 };
+    glColor3f(1,1,1);
+
+    glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT  );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    glBindTexture (GL_TEXTURE_2D, texture->texture);
+
+    GLfloat inc = 10;
+    GLfloat width = this->arena.width;
+    GLfloat height = this->arena.height;
+    GLfloat C = 0;
+    GLfloat D = 1;
+
+    for(GLfloat i = 0; i < width; i += inc){
+        glBegin(GL_QUADS);
+            for(GLfloat j = 0; j < height; j += inc){
+                GLfloat arena_x = i;
+                GLfloat arena_y = j;
+
+                GLfloat image_x = (arena_x / width) * (D - C) + C;
+                GLfloat image_y = (arena_y / height) * (D - C) + C;
+                
+                glNormal3f(0, 0, 1);
+                glTexCoord2f(image_x, image_y);
+                glVertex3f(arena_x, arena_y, 0);
+
+                arena_x = i + inc;
+                image_x = (arena_x / width) * (D - C) + C;
+
+                glNormal3f(0, 0, 1);
+                glTexCoord2f(image_x, image_y);
+                glVertex3f(arena_x, arena_y, 0);
+
+                arena_y = j + inc;
+                image_y = (arena_y / height) * (D - C) + C;
+
+                glNormal3f(0, 0, 1);
+                glTexCoord2f(image_x, image_y);
+                glVertex3f(arena_x, arena_y, 0);
+
+                arena_x = i;
+                image_x = (arena_x / width) * (D - C) + C;
+
+                glNormal3f(0, 0, 1);
+                glTexCoord2f(image_x, image_y);
+                glVertex3f(arena_x, arena_y, 0);
+            }
+        glEnd();
+    }
+
+
+    glBindTexture (GL_TEXTURE_2D, 0);
 }
 
 void Game::DrawGameOver()
@@ -95,19 +169,19 @@ void Game::keyPress(unsigned char key, int x, int y)
     {
         case 'a':
         case 'A':
-             keyStatus[(int)('a')] = 1; //Using keyStatus trick
+             keyStatus[(int)('a')] = 1;
              break;
         case 'd':
         case 'D':
-             keyStatus[(int)('d')] = 1; //Using keyStatus trick
+             keyStatus[(int)('d')] = 1;
              break;
         case 'w':
         case 'W':
-             keyStatus[(int)('w')] = 1; //Using keyStatus trick
+             keyStatus[(int)('w')] = 1;
              break;
         case 's':
         case 'S':
-             keyStatus[(int)('s')] = 1; //Using keyStatus trick
+             keyStatus[(int)('s')] = 1;
              break;
         case 'p':
         case 'P':
@@ -320,37 +394,56 @@ void Game:: changeCamera(int angle, int w, int h)
 
 }
 
+void Game :: DrawLight(GLfloat position_params[]){
+    glDisable(GL_LIGHTING);
+        glPointSize(25);
+        glColor3f(1.0,1.0,0.0);
+        glBegin(GL_POINTS);
+            glVertex3f(position_params[0],position_params[1],position_params[2]);
+        glEnd();    
+    glEnable(GL_LIGHTING);
+}
+
+void Game :: setLight(Character* player, GLuint light_number){
+    GLfloat position_params[] = {player->gX, player->gY, player->gZ + player->torsoRadius + player->headRadius*2 + 130, 1.0};
+    glLightfv(light_number, GL_POSITION, position_params);
+
+    DrawLight(position_params);
+
+    GLfloat ambient_params[] = {0.2, 0.2, 0.2, 1};
+    glLightfv(light_number, GL_AMBIENT, ambient_params);
+
+    GLfloat diffuse_params[] = {1, 1, 1, 1};
+    glLightfv(light_number, GL_DIFFUSE, diffuse_params);
+
+    GLfloat spotCutoff_params[] = {30.0};
+    glLightfv(light_number, GL_SPOT_CUTOFF, spotCutoff_params); 
+    glLightf(light_number, GL_SPOT_EXPONENT, 2.0);
+
+    GLfloat spotDirection_params[] = {0, 0, -1};
+    glLightfv(light_number, GL_SPOT_DIRECTION, spotDirection_params);
+}
+
 void Game :: setIlumination(){
     if(spotLight){
         glDisable(GL_LIGHT0);
         glEnable(GL_LIGHT1);
-        
-        GLfloat position_params[] = {this->player1->gX, this->player1->gY, this->player1->gZ + this->player1->torsoRadius + 2*this->player1->headRadius + 500, 1.0};
-        glLightfv(GL_LIGHT1, GL_POSITION, position_params);
-
-        GLfloat ambient_params[] = {0.2, 0.2, 0.2, 1};
-        glLightfv(GL_LIGHT1, GL_AMBIENT, ambient_params);
-
-        GLfloat diffuse_params[] = {1, 1, 1, 1};
-        glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse_params);
-        
-        GLfloat spotCutoff_params[] = {45.0};
-        glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, spotCutoff_params); 
-        glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.0);
-
-        GLfloat spotDirection_params[] = {0, 0, -1};
-        glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotDirection_params);
-
+        glEnable(GL_LIGHT2);
+        setLight(this->player1, GL_LIGHT1);
+        setLight(this->player2, GL_LIGHT2);
     }else{
         glDisable(GL_LIGHT1);
+        glDisable(GL_LIGHT2);
         glEnable(GL_LIGHT0);
+
         GLfloat ambient_params[] = {0.2, 0.2, 0.2, 1};
         glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_params);
 
-        GLfloat position_params[] = {this->arena.x + this->arena.width/2, this->arena.y + this->arena.height/2, 500, 0};
+        GLfloat position_params[] = {this->arena.x + this->arena.width/2, this->arena.y + this->arena.height/2, 300, 1};
         glLightfv(GL_LIGHT0, GL_POSITION, position_params);
+
+        DrawLight(position_params);
     }
-    
 }
 
 

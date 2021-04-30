@@ -54,6 +54,8 @@ public:
 
     bool spotLight = false;
 
+    Texture* footballFieldTexture;
+
     GLfloat applyTimeFix(GLfloat amount) {
         return amount * (timeDiference/20);
     }
@@ -92,6 +94,7 @@ public:
 
     void DrawCuboid(GLint height, GLint width, GLint thickness);
     void DrawArena(GLfloat x, GLfloat y, GLfloat z) ;
+    void DrawFootballField(Texture* texture);
     void setPlayerStartPosition(Character* pl, GLfloat x, GLfloat y, GLfloat angle);
     
     void mouseEvent(int button, int state, int x, int y)
@@ -148,6 +151,8 @@ public:
     void setCamera();
     void changeCamera(int angle, int w, int h);
     void setIlumination();
+    void DrawLight(GLfloat position_params[]);
+    void setLight(Character* player, GLuint light_number);
 };
 
 #endif /* Game_hpp */

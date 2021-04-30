@@ -21,46 +21,6 @@
 
 Game* game;
 
-void DrawAxes()
-{
-    GLfloat color_r[] = { 1.0, 0.0, 0.0, 1.0 };
-    GLfloat color_g[] = { 0.0, 1.0, 0.0, 1.0 };
-    GLfloat color_b[] = { 0.0, 0.0, 1.0, 1.0 };
-
-    glPushAttrib(GL_ENABLE_BIT);
-        glDisable(GL_LIGHTING);
-        glDisable(GL_TEXTURE_2D);
- 
-        //x axis
-        glPushMatrix();
-            glColor3fv(color_r);
-            glScalef(5, 0.3, 0.3);
-            glTranslatef(0.5, 0, 0); // put in one end
-            glutSolidCube(10.0);
-        glPopMatrix();
-
-        //y axis
-        glPushMatrix();
-            glColor3fv(color_g);
-            glRotatef(90,0,0,1);
-            glScalef(5, 0.3, 0.3);
-            glTranslatef(0.5, 0, 0); // put in one end
-            glutSolidCube(10.0);
-        glPopMatrix();
-
-        //z axis
-        glPushMatrix();
-            glColor3fv(color_b);
-            glRotatef(-90,0,1,0);
-            glScalef(5, 0.3, 0.3);
-            glTranslatef(0.5, 0, 0); // put in one end
-            glutSolidCube(10.0);
-        glPopMatrix();
-    glPopAttrib();
-    
-}
-
-
 void renderScene(void)
 {   
     glMatrixMode(GL_MODELVIEW);
@@ -68,8 +28,8 @@ void renderScene(void)
     glClearColor (0.0,0.0,0.0, 1.0);
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    game->setIlumination();
     game->setCamera();
+    game->setIlumination();
 
     if(game->gameIsOver){
         game->DrawGameOver();
@@ -77,18 +37,13 @@ void renderScene(void)
         game->player1->Draw();
         game->player2->Draw();
         game->DrawArena(game->arena.x + game->arena.width/2, game->arena.y + game->arena.height/2, 0);
-
-        //  glPushMatrix();
-        //     glTranslatef(game->arena.x + game->arena.width/2, game->arena.y + game->arena.height/2, 0);
-        //     DrawAxes();
-        // glPopMatrix();
         // game->PrintScore();
     }
     
     if(!(game->player1->characterIsMoving()))
         game->player1->resetLegAngles();
 
-     glutSwapBuffers(); // Desenha the new frame of the game->
+     glutSwapBuffers();
 }
 
 
@@ -108,7 +63,6 @@ void keyup(unsigned char key, int x, int y)
 void ResetKeyStatus()
 {
     int i;
-    //Initialize keyStatus
     for(i = 0; i < 256; i++)
        game->keyStatus[i] = 0;
 }
@@ -116,8 +70,7 @@ void ResetKeyStatus()
 void init(void)
 {
     ResetKeyStatus();
-    // The color the windows will redraw. Its done to erase the previous frame.
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black, no opacity(alpha).
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
  
     glShadeModel (GL_SMOOTH);
     glEnable(GL_CULL_FACE);
@@ -125,18 +78,13 @@ void init(void)
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
+    glEnable(GL_TEXTURE_2D);
 
-    
-    // glMatrixMode(GL_PROJECTION); // Select the projection matrix    
-    // glOrtho(game->arena.x,     // X coordinate of left edge
-    //         game->arena.x + game->arena.width,     // X coordinate of right edge
-    //         game->arena.y,     // Y coordinate of bottom edge
-    //         game->arena.y + game->arena.height,     // Y coordinate of top edge
-    //         -100,     // Z coordinate of the “near” plane            
-    //         100);    // Z coordinate of the “far” plane
-    // glMatrixMode(GL_MODELVIEW); // Select the projection matrix    
-    // glLoadIdentity();
-      
+    game->footballFieldTexture = new Texture();
+    game->footballFieldTexture->LoadTextureRAW("footballField.bmp");   
+
+    game->player1->torsoTexture = new Texture();
+    game->player1->torsoTexture->LoadTextureRAW("camisa_fla.bmp");
 }
 
 
@@ -164,7 +112,6 @@ void idle(void)
     
     game->player2->followCharacter(game, game->player1, inc);
     
-    //Treat keyPress
     if(game->isKeyPressed('a'))
     {
         game->player1->RotateBody(-inc);
@@ -182,9 +129,7 @@ void idle(void)
     {
         game->player1->MoveForward(-inc);
     }
-    
-//    cout << "Pos:" << game->player1->gX << game->player1->gY << game->player1->gZ << endl;
-    
+        
     glutPostRedisplay();
 }
 
