@@ -69,17 +69,17 @@ void Game::DrawArena(GLfloat x, GLfloat y, GLfloat z) {
         GLfloat centerY = this->arena.y;
         glTranslatef(centerX, centerY, 0);
         glTranslatef(0, 0, -this->player1->torsoRadius - this->player1->legLength/2 - this->player1->legLength);
-        this->DrawFootballField(footballFieldTexture);
+        this->DrawFootballField(this->footballFieldTexture);
     glPopMatrix();
 
 }
 
 void Game :: DrawFootballField(Texture* texture){
-    GLfloat materialEmission[] = { 0, 0, 0, 1};
-    GLfloat materialColorA[] = { 0, 1, 1, 1};
-    GLfloat materialColorD[] = { 10, 1.0, 1.0, 1};
-    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1};
-    GLfloat mat_shininess[] = { 100.0 };
+    GLfloat materialEmission[] = { 0.5, 0.5, 0.5, 1};
+    GLfloat materialColorA[] = { 0.5, 0.5, 0.5, 1};
+    GLfloat materialColorD[] = { 0.5, 0.5, 0.5, 1};
+    GLfloat mat_specular[] = { 0.5, 0.5, 0.5, 1};
+    GLfloat mat_shininess[] = { 0.0 };
     glColor3f(1,1,1);
 
     glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
@@ -88,9 +88,12 @@ void Game :: DrawFootballField(Texture* texture){
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT  );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-    glBindTexture (GL_TEXTURE_2D, texture->texture);
+    if(texture){
+         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT  );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+        glBindTexture (GL_TEXTURE_2D, texture->texture);
+    }
+   
 
     GLfloat inc = 10;
     GLfloat width = this->arena.width;
@@ -138,6 +141,22 @@ void Game :: DrawFootballField(Texture* texture){
 
     glBindTexture (GL_TEXTURE_2D, 0);
 }
+
+void Game :: DrawAudience(Texture* texture){
+    glPushMatrix();
+        glTranslatef(this->arena.x + this->arena.width/2, this->arena.y + this->arena.height/2, 0);
+        audience->Draw(this->player1->torsoColor , texture);
+    glPopMatrix();
+}
+
+void Game :: DrawGame(){
+    this->player1->Draw();
+    this->player2->Draw();
+    this->DrawArena(this->arena.x + this->arena.width/2, this->arena.y + this->arena.height/2, 0);
+    this->DrawAudience(this->audienceTexture);
+    // this->PrintScore();
+}
+
 
 void Game::DrawGameOver()
 {
@@ -268,6 +287,8 @@ Game::Game(string xmlPath) {
     this->player2->setPlayerType(CharacterType::ENEMY);
 
     this->arena = initObject.arena;
+
+    this->audience = new Sphere(max(arena.width, arena.height)*3);
 }
 
 void Game::resetGame() {
@@ -386,7 +407,7 @@ void Game:: changeCamera(int angle, int w, int h)
     glLoadIdentity ();
 
     gluPerspective (angle, 
-            (GLfloat)w / (GLfloat)h, 1, this->arena.width + this->arena.height);
+            (GLfloat)w / (GLfloat)h, 1, (this->arena.width + this->arena.height)*4);
 
     glMatrixMode (GL_MODELVIEW);
 
@@ -415,6 +436,9 @@ void Game :: setLight(Character* player, GLuint light_number){
 
     GLfloat diffuse_params[] = {1, 1, 1, 1};
     glLightfv(light_number, GL_DIFFUSE, diffuse_params);
+
+    GLfloat specular_params[] = {1, 1, 1, 1};
+    glLightfv(light_number, GL_SPECULAR, specular_params);
 
     GLfloat spotCutoff_params[] = {30.0};
     glLightfv(light_number, GL_SPOT_CUTOFF, spotCutoff_params); 

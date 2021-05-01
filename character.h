@@ -133,6 +133,7 @@ public:
     Sphere* legJoint;
 
     Texture* torsoTexture = NULL;
+    Texture* handTexture = NULL;
 
     int countPoint = true;
     
@@ -170,7 +171,6 @@ public:
     void DrawRectangle(GLint height, GLint width, Color color);
     void DrawCuboid(GLint height, GLint width, GLint thickness, Color color);
     void DrawCircle(GLint radius, Color color);
-    void DrawSphere(Sphere* sphere, Color color, Texture* texture = NULL);
     void DrawStroke(GLint radius, Color color);
     void DrawCircleDashed(GLint radius, Color color);
     void DrawWheel(GLfloat x, GLfloat y, GLfloat thetaWheel, Color color);

@@ -54,7 +54,11 @@ public:
 
     bool spotLight = false;
 
-    Texture* footballFieldTexture;
+    Sphere* audience;
+    
+    Texture* footballFieldTexture = NULL;
+    Texture* audienceTexture = NULL;
+
 
     GLfloat applyTimeFix(GLfloat amount) {
         return amount * (timeDiference/20);
@@ -84,6 +88,7 @@ public:
     void PrintScore();
     void Output(int x, int y, Color color, string str);
     void DrawGameOver();
+    void DrawGame();
     
     
     void keyPress(unsigned char key, int x, int y);
@@ -94,7 +99,8 @@ public:
 
     void DrawCuboid(GLint height, GLint width, GLint thickness);
     void DrawArena(GLfloat x, GLfloat y, GLfloat z) ;
-    void DrawFootballField(Texture* texture);
+    void DrawFootballField(Texture* texture = NULL);
+    void DrawAudience(Texture* texture = NULL);
     void setPlayerStartPosition(Character* pl, GLfloat x, GLfloat y, GLfloat angle);
     
     void mouseEvent(int button, int state, int x, int y)

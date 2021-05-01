@@ -14,8 +14,8 @@
 #include <math.h>
 #include <iostream>
 #include <vector>
+#include "SOIL.h"
 
-#include "imageloader.h"
 
 #define PI 3.14
 
@@ -287,7 +287,7 @@ class Sphere{
 private:
     void calculateCoordinates(GLfloat current_v, GLfloat current_h, int idx){
         this->vertices[idx]->X = radius * sin(current_h / 180 * M_PI) * sin(current_v / 180 * M_PI);   
-        this->vertices[idx]->Y = radius * cos(current_h / 180 * M_PI) * sin(current_v / 180 * M_PI);
+        this->vertices[idx]->Y = - radius * cos(current_h / 180 * M_PI) * sin(current_v / 180 * M_PI);
         this->vertices[idx]->Z = radius * cos(current_v / 180 * M_PI);
         this->vertices[idx]->V = current_v / 180;
         this->vertices[idx]->U = current_h / 360;
@@ -303,10 +303,10 @@ public:
     vector <Vertice*> vertices;
     int numberOfVertices;
     GLfloat radius;
-    Sphere(GLfloat radius, GLfloat space){
+    Sphere(GLfloat radius, GLfloat space=1){
         this->radius = radius;
         this->numberOfVertices = (180 / space) * (2 + 360 / (2*space)) * 4;
-        this->vertices.resize(numberOfVertices);
+        this->vertices.resize(this->numberOfVertices);
 
         for(int i=0;i<this->numberOfVertices;i++)
             vertices[i] = new Vertice();
@@ -340,6 +340,38 @@ public:
                 idx++;
             }
     }
+    void Draw( Color color, Texture* texture = NULL){
+        GLfloat materialEmission[] = { 0.10, 0.10, 0.10, 1};
+        GLfloat materialColorA[] = { 0.2, 0.2, 0.2, 1};
+        GLfloat materialColorD[] = { 1.0, 1.0, 1.0, 1};
+        GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1};
+        GLfloat mat_shininess[] = { 100.0 };
+        glColor3f(1,1,1);
+    
+        glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+        glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+        glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+        if(texture){
+            glBindTexture (GL_TEXTURE_2D, texture->texture);
+        }
+        
+        glBegin (GL_TRIANGLE_STRIP);
+        for ( int i = 0; i <this->numberOfVertices; i++){
+            glNormal3f(this->vertices[i]->nX, this->vertices[i]->nY, this->vertices[i]->nZ);
+
+            if(texture){
+                glTexCoord2f(this->vertices[i]->U, this->vertices[i]->V);
+            }
+
+            glVertex3f (this->vertices[i]->X, this->vertices[i]->Y, this->vertices[i]->Z);
+        }
+        glEnd();
+
+        glBindTexture (GL_TEXTURE_2D, 0);
+        }
 };
 
 

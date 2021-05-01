@@ -34,10 +34,7 @@ void renderScene(void)
     if(game->gameIsOver){
         game->DrawGameOver();
     } else {
-        game->player1->Draw();
-        game->player2->Draw();
-        game->DrawArena(game->arena.x + game->arena.width/2, game->arena.y + game->arena.height/2, 0);
-        // game->PrintScore();
+        game->DrawGame();
     }
     
     if(!(game->player1->characterIsMoving()))
@@ -73,18 +70,31 @@ void init(void)
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
  
     glShadeModel (GL_SMOOTH);
-    glEnable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
     glEnable(GL_TEXTURE_2D);
+    glDepthFunc(GL_LEQUAL);
 
     game->footballFieldTexture = new Texture();
-    game->footballFieldTexture->LoadTextureRAW("footballField.bmp");   
+    game->footballFieldTexture->LoadTextureRAW("footballField.png");   
 
     game->player1->torsoTexture = new Texture();
-    game->player1->torsoTexture->LoadTextureRAW("camisa_fla.bmp");
+    game->player1->torsoTexture->LoadTextureRAW("camisa_fla.png");
+
+    game->player2->torsoTexture = new Texture();
+    game->player2->torsoTexture->LoadTextureRAW("camisa_vasco.png");
+
+    // game->player1->handTexture = new Texture();
+    // game->player1->handTexture->LoadTextureRAW("luva.png");
+
+    // game->player2->handTexture = new Texture();
+    // game->player2->handTexture->LoadTextureRAW("luva.png");
+
+    // game->audienceTexture = new Texture();
+    // game->audienceTexture->LoadTextureRAW("torcida.png");
+
 }
 
 
