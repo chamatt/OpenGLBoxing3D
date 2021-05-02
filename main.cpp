@@ -68,27 +68,24 @@ void renderScene(void)
     glClearColor (0.0,0.0,0.0, 1.0);
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    game->PrintScore();
+    if(game->gameIsOver){
+        game->DrawGameOver();
+    }
+
     game->setIlumination();
     game->setCamera();
 
-    if(game->gameIsOver){
-        game->DrawGameOver();
-    } else {
+    if(!game->gameIsOver){
         game->player1->Draw();
         game->player2->Draw();
         game->DrawArena(game->arena.x + game->arena.width/2, game->arena.y + game->arena.height/2, 0);
-
-        //  glPushMatrix();
-        //     glTranslatef(game->arena.x + game->arena.width/2, game->arena.y + game->arena.height/2, 0);
-        //     DrawAxes();
-        // glPopMatrix();
-        // game->PrintScore();
     }
     
     if(!(game->player1->characterIsMoving()))
         game->player1->resetLegAngles();
 
-     glutSwapBuffers(); // Desenha the new frame of the game->
+    glutSwapBuffers(); // Desenha the new frame of the game->
 }
 
 
@@ -120,11 +117,12 @@ void init(void)
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black, no opacity(alpha).
  
     glShadeModel (GL_SMOOTH);
-    glEnable(GL_CULL_FACE);
+    // glEnable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
+    glDepthFunc(GL_LEQUAL); 
 
     
     // glMatrixMode(GL_PROJECTION); // Select the projection matrix    
@@ -206,7 +204,7 @@ int main(int argc, char *argv[])
     game = new Game(argv[1]);
     
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
  
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(150,50);
