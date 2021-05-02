@@ -86,7 +86,9 @@ public:
     char str[1000];
     void * font = GLUT_BITMAP_9_BY_15;
     void PrintScore();
-    void Output(int x, int y, Color color, string str);
+    void PrintText(GLfloat x, GLfloat y, const char * text, Color color);
+    void RasterChars(GLfloat x, GLfloat y, GLfloat z, const char * text, Color color);
+    void Output(GLfloat x, GLfloat y, Color color, string str);
     void DrawGameOver();
     void DrawGame();
     

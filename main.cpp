@@ -28,19 +28,22 @@ void renderScene(void)
     glClearColor (0.0,0.0,0.0, 1.0);
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    game->PrintScore();
+    if(game->gameIsOver){
+        game->DrawGameOver();
+    }
+
     game->setCamera();
     game->setIlumination();
 
-    if(game->gameIsOver){
-        game->DrawGameOver();
-    } else {
+    if(!game->gameIsOver){
         game->DrawGame();
     }
     
     if(!(game->player1->characterIsMoving()))
         game->player1->resetLegAngles();
 
-     glutSwapBuffers();
+    glutSwapBuffers(); // Desenha the new frame of the game->
 }
 
 
@@ -70,12 +73,12 @@ void init(void)
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
  
     glShadeModel (GL_SMOOTH);
+    // glEnable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
-    glEnable(GL_TEXTURE_2D);
-    glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LEQUAL); 
 
     game->footballFieldTexture = new Texture();
     game->footballFieldTexture->LoadTextureRAW("footballField.png");   
@@ -161,7 +164,7 @@ int main(int argc, char *argv[])
     game = new Game(argv[1]);
     
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
  
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(150,50);

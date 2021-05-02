@@ -8,32 +8,49 @@ void Game::initializeCharacters(GLfloat sizep1, GLfloat sizep2){
     this->player2 = new Character(this, 20);
 }
 
-void Game::PrintScore()
+
+
+void Game::RasterChars(GLfloat x, GLfloat y, GLfloat z, const char * text, Color color)
 {
-   GLfloat x = this->arena.x+20, y = this->arena.y+20;
-   glColor3f(1.0, 1.0, 1.0);
-   //Cria a string a ser impressa
-   char *tmpStr;
-   sprintf(this->str, "Player: %d vs Enemy: %d", this->player1->hitScore, this->player2->hitScore);
-   //Define a posicao onde vai comecar a imprimir
-   glRasterPos2f(x, y);
-   //Imprime um caractere por vez
-   tmpStr = this->str;
-   while( *tmpStr ){
-       glutBitmapCharacter(this->font, *tmpStr);
-       tmpStr++;
-   }
+    glPushAttrib(GL_ENABLE_BIT);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_TEXTURE_2D);
+        glColor3f(color.R, color.G, color.B);
+        glRasterPos3f(x, y, z);
+
+        const char* tmpStr;
+        tmpStr = text;
+        while( *tmpStr ){
+            glutBitmapCharacter(GLUT_BITMAP_9_BY_15, *tmpStr);
+            tmpStr++;
+        }
+    glPopAttrib();
 }
 
-void Game::Output(int x, int y, Color color, string str)
+void Game::PrintText(GLfloat x, GLfloat y, const char * text, Color color)
 {
-  glColor3f( color.R, color.G, color.B );
-  glRasterPos2f(x, y);
-  int len, i;
-  len = str.size();
-  for (i = 0; i < len; i++) {
-    glutBitmapCharacter(this->font, str[i]);
-  }
+    glMatrixMode (GL_PROJECTION);
+    glPushMatrix();
+        glLoadIdentity ();
+        glOrtho (0, 1, 0, 1, -1, 1);
+        RasterChars(x, y, 1, text, color);    
+    glPopMatrix();
+    glMatrixMode (GL_MODELVIEW);
+}
+
+void Game::PrintScore()
+{
+   char *tmpStr;
+   sprintf(this->str, "Player: %d vs Enemy: %d", this->player1->hitScore, this->player2->hitScore);
+   tmpStr = this->str;
+   PrintText(0.58,0.95, tmpStr, Color(255,255,255));
+}
+
+void Game::Output(GLfloat x, GLfloat y, Color color, string text)
+{
+   char *tmpStr = new char[text.length() + 1];
+   std::strcpy(tmpStr,text.c_str());
+   PrintText(x,y,tmpStr, color);
 }
 
 void Game::DrawCuboid(GLint width, GLint height, GLint thickness){
@@ -154,22 +171,21 @@ void Game :: DrawGame(){
     this->player2->Draw();
     this->DrawArena(this->arena.x + this->arena.width/2, this->arena.y + this->arena.height/2, 0);
     this->DrawAudience(this->audienceTexture);
-    // this->PrintScore();
 }
 
 
 void Game::DrawGameOver()
 {
-    auto calcSize = [](string newStr) -> int { return (newStr.size() * 9)/2; };
+    auto calcSize = [](string newStr) -> float { return (newStr.size() * 9.0)/(float)1000; };
     
     string winString = "You Win!";
     string loseString = "You Lose!";
     string tieString = "Game Over!";
     string restartString = "Press 'M' to restart the game";
     
-    GLfloat centerX =this->arena.x+this->arena.width/2;
-    GLfloat centerY = this->arena.y+this->arena.height/2;
-    
+    GLfloat centerX = 0.5;
+    GLfloat centerY = 0.5;
+
     if(player1->hitScore > player2->hitScore)
         Output(centerX - calcSize(winString), centerY, Color(0,255,0), winString);
     
@@ -179,7 +195,7 @@ void Game::DrawGameOver()
     if(player1->hitScore == player2->hitScore)
         Output(centerX - calcSize(tieString), centerY, Color(0,0,255), tieString);
     
-    Output(centerX - calcSize(restartString), centerY - 20, Color(255,255,255), restartString);
+    Output(centerX - calcSize(restartString), centerY - 0.04, Color(255,255,255), restartString);
 }
 
 void Game::keyPress(unsigned char key, int x, int y)
@@ -325,6 +341,8 @@ void Game::checkGameOver() {
 
 void Game :: setCamera(){
     if(cameraNumber == 1){
+            PrintText(0.05, 0.95, "Camera 1", Color(255,255,255));
+
             Vector3D* inFrontOfNose = new Vector3D(0, 0, 0);
             this->player1->moveForwardTransform(this->player1->headRadius)->apply3D(inFrontOfNose);
             Transformation* tr = new Transformation();
@@ -345,6 +363,8 @@ void Game :: setCamera(){
                             inFrontOfNoseMais10->z,
                             0, 0, 1);
     }else if(cameraNumber == 2){
+        PrintText(0.05, 0.95, "Camera 2", Color(255,255,255));
+        
         Vector3D* foreArm = new Vector3D(0, 0, 0);
         Vector3D* hand = new Vector3D(0, 0, 0);
 
@@ -372,6 +392,7 @@ void Game :: setCamera(){
                             0, 0, 1);
 
     }else{
+        PrintText(0.05, 0.95, "Camera 3", Color(255,255,255));
     
         Vector3D* vet = new Vector3D(0, 0, 0);
 
