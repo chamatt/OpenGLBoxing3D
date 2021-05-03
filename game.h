@@ -141,7 +141,7 @@ public:
        mouse.setPosition(x, y); 
         
 
-        if (mouse.rightButton.isPressed){
+        if (mouse.rightButton.isPressed && this->cameraNumber == 3){
             camXYAngle += x - lastX;
             camXZAngle += y - lastY;
             
