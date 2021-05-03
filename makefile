@@ -3,6 +3,7 @@ CFLAGS =-lGL\
 		 -lGLU\
 		 -lglut\
 		 -std=c++11\
+		 -w
 
 all: trabalhocg
 

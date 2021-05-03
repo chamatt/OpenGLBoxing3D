@@ -35,6 +35,7 @@ void renderScene(void)
         return;
     }
 
+    game->setTexture();
     game->setCamera();
     game->setIlumination();
 

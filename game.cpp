@@ -272,6 +272,9 @@ void Game::keyPress(unsigned char key, int x, int y)
         case 'n':
             spotLight = !spotLight;
             break;
+        case 't':
+            textureEnabled = !textureEnabled;
+            break;
         case 27 :
             if(gameIsOver)
              exit(0);
@@ -490,6 +493,14 @@ void Game :: setIlumination(){
         glLightfv(GL_LIGHT0, GL_POSITION, position_params);
 
         DrawLight(position_params);
+    }
+}
+
+void Game :: setTexture() {
+    if(textureEnabled) {
+        glEnable(GL_TEXTURE_2D);
+    } else {
+        glDisable(GL_TEXTURE_2D);
     }
 }
 

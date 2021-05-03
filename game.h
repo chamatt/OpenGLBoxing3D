@@ -53,6 +53,7 @@ public:
     int lastY = 0;
 
     bool spotLight = false;
+    bool textureEnabled = true;
 
     Sphere* audience;
     
@@ -162,6 +163,7 @@ public:
     void DrawLight(GLfloat position_params[]);
     void setLight(Character* player, GLuint light_number);
     void LoadTexture();
+    void setTexture();
 };
 
 #endif /* Game_hpp */
