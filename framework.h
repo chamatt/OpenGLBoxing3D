@@ -48,6 +48,29 @@ public:
     {
       return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
+
+    static bool equal(GLfloat a, GLfloat b){
+        GLfloat epsilon = 1e-5;
+        return fabs(a - b) < epsilon;
+    }
+
+    static bool lt(GLfloat a, GLfloat b){
+        GLfloat epsilon = 1e-5;
+        return a + epsilon < b; 
+    }
+
+    static bool lte(GLfloat a,GLfloat b){ 
+        GLfloat epsilon = 1e-5;
+        return a < b + epsilon;
+    }
+
+    static bool gt(GLfloat a,GLfloat b){
+        return !lte(a, b);
+    }
+
+    static bool gte(GLfloat a, GLfloat b){ 
+        return !lt(a, b);
+    }
     
     static GLfloat clamp(GLfloat v, GLfloat lo, GLfloat hi) {
         GLfloat clamped_value = v;
@@ -56,16 +79,7 @@ public:
         return clamped_value;
     }
 
-    static bool equal(GLfloat a, GLfloat b){
-        GLfloat epsilon = 1e-7;
-        return fabs(a - b) < epsilon;
-    }
-
-    static bool lt(GLfloat a, GLfloat b){
-        GLfloat epsilon = 1e-7;
-        return a + epsilon < b; 
-    }
-
+    
 };
 
 
@@ -201,10 +215,10 @@ public:
         GLfloat bottomWall = rect.y;
         GLfloat topWall = rect.y + rect.height;
         
-        if(circle.x - circle.radius < leftWall) return true;
-        if(circle.x + circle.radius > rightWall) return true;
-        if(circle.y - circle.radius < bottomWall) return true;
-        if(circle.y + circle.radius > topWall) return true;
+        if(Util :: lt(circle.x - circle.radius, leftWall)) return true;
+        if(Util :: gt(circle.x + circle.radius, rightWall)) return true;
+        if(Util :: lt(circle.y - circle.radius, bottomWall)) return true;
+        if(Util :: gt(circle.y + circle.radius, topWall)) return true;
         return false;
     }
     

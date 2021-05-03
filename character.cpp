@@ -1,6 +1,7 @@
 #include <math.h>
 #include <iostream>
 #include <vector>
+#include <iomanip>
 #include "character.h"
 #include "framework.h"
 #include "game.h"
@@ -123,11 +124,6 @@ void Character::DrawCircle(GLint radius, Color color)
         }
     glEnd();
 }
-
-//void DrawObj(double size)
-//{
-//
-//}
 
 void Character::DrawStroke(GLint radius, Color color)
 {
@@ -335,20 +331,49 @@ void Character::MoveForward(GLfloat dx, bool applyFix)
 {
     if(applyFix)
         dx = this->gameObject->applyTimeFix(dx);
-    
-    Vector3D* charPosition = new Vector3D(0, 0, 0);
-    
+        
     this->nextNPCState(CharacterPunchSignal::NONE);
     
     if(willColide(gameObject, dx)) return;
+
+    bool moved = false;
+
+    Vector3D* charPosition = new Vector3D(0, 0, 0);
+
+    Transformation* tr = new Transformation();
+    tr->translate3d(this->gX, this->gY, this->gZ);
+
+    GLfloat inc_y = dx * cos(Util :: degToRad(-this->gTheta));
+    GLfloat inc_x = dx * sin(Util :: degToRad(-this->gTheta));
+
+    Rectangle rect = Rectangle(this->gameObject->arena.x, this->gameObject->arena.y, this->gameObject->arena.width, this->gameObject->arena.height);
+
+    GLfloat leftWall = rect.x;
+    GLfloat rightWall = rect.x + rect.width;
+    GLfloat bottomWall = rect.y;
+    GLfloat topWall = rect.y + rect.height;
+
+    GLfloat nx = this->gX + inc_x;
+    GLfloat ny = this->gY + inc_y;
+
+    if(fabs(ny - topWall) >= this->torsoRadius and fabs(ny - bottomWall) >= this->torsoRadius){
+        tr->translate3d(0, inc_y, 0);
+        moved = true;
+    }
+
+    if(fabs(nx - rightWall) >= this->torsoRadius and fabs(nx - leftWall) >= this->torsoRadius){
+        tr->translate3d(inc_x, 0, 0);
+        moved = true;
+    }
     
-    moveForwardTransform(dx)->apply3D(charPosition);
+    tr->apply3D(charPosition);
     
     this->gX = charPosition->x;
     this->gY = charPosition->y;
     this->gZ = charPosition->z;
 
-    walkMovement(dx);
+    if(moved)
+        walkMovement(dx);
 }
 
 bool Character::willColideWithOtherPlayer(Character* another, GLfloat dx)
@@ -402,7 +427,7 @@ bool Character::willColide(Game* game, GLfloat dx) {
     
     if(willColideWithOtherPlayer(game->player1, dx)) return true;
     if(willColideWithOtherPlayer(game->player2, dx)) return true;
-    if(willColideWithGameWalls(dx)) return true;
+    // if(willColideWithGameWalls(dx)) return true;
     
     return false;
 }
@@ -527,14 +552,15 @@ bool Character::characterIsMoving() {
 }
 
 void Character :: walkMovement(GLfloat inc){
-    inc = fabs(inc);
+    inc = fabs(inc)*0.7;
+
+    GLfloat legMaxAngle = 20;
 
     if(this->moveLeftLeg){
         this->leftLegAngle += inc;
         this->rightLegAngle -= inc;
-        this->leftLegAngle = Util :: clamp(leftLegAngle, -20, 20);
 
-        if(Util :: equal(fabs(this->leftLegAngle) , 20))
+        if(Util :: gte(this->leftLegAngle , legMaxAngle))
             this->moveLeftLeg = !this->moveLeftLeg;
 
         if(Util :: lt(this->leftLegAngle, 0))
@@ -544,13 +570,12 @@ void Character :: walkMovement(GLfloat inc){
 
         if(Util :: lt(this->leftSecondLegAngle, 0))
             this->leftSecondLegAngle = 0;
-        
+
     }else{
         this->leftLegAngle -= inc;
         this->rightLegAngle += inc;
-        this->rightLegAngle = Util :: clamp(rightLegAngle, -20, 20);
 
-        if(Util :: equal(fabs(this->rightLegAngle), 20))
+        if(Util :: gte(this->rightLegAngle, legMaxAngle))
             this->moveLeftLeg = !this->moveLeftLeg;
 
         if(Util :: lt(this->rightLegAngle, 0))

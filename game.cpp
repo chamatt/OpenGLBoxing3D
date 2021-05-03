@@ -521,12 +521,12 @@ void Game::LoadTexture() {
     this->player2->torsoTexture = new Texture();
     this->player2->torsoTexture->LoadTextureRAW("camisa_vasco.png");
     
-    // game->player1->handTexture = new Texture();
-    // game->player1->handTexture->LoadTextureRAW("luva.png");
+    this->player1->handTexture = new Texture();
+    this->player1->handTexture->LoadTextureRAW("luva_fla.png");
 
-    // game->player2->handTexture = new Texture();
-    // game->player2->handTexture->LoadTextureRAW("luva.png");
+    this->player2->handTexture = new Texture();
+    this->player2->handTexture->LoadTextureRAW("luva_vasco.png");
 
-    // game->audienceTexture = new Texture();
-    // game->audienceTexture->LoadTextureRAW("torcida.png");
+    this->audienceTexture = new Texture();
+    this->audienceTexture->LoadTextureRAW("torcida.png");
 }
