@@ -148,12 +148,17 @@ void Character::DrawCircleDashed(GLint radius, Color color)
     glPointSize(2);
     float theta;
     glColor3f(color.R, color.G, color.B);
-    glBegin(GL_POINTS);
-        for(int i = 0; i < 360/10; i++) {
-            theta = i*10*3.14/180;
-            glVertex2f(radius*cos(theta), radius*sin(theta));
-        }
-    glEnd();
+
+    GLfloat materialColor[] = {color.R, color.G, color.B, 1};
+    glMaterialfv(GL_FRONT, GL_AMBIENT,materialColor );
+
+    for(int i = 0; i < 360/40; i++) {
+        theta = i*40*3.14/180;
+        glPushMatrix();
+            glTranslatef(radius*cos(theta), radius*sin(theta), 0);
+            glutSolidSphere(5, 10, 20);
+        glPopMatrix();
+    }
 }
 
 void Character::DrawLeftArms(GLfloat x, GLfloat y)
