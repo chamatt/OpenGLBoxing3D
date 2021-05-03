@@ -161,6 +161,7 @@ public:
     void setIlumination();
     void DrawLight(GLfloat position_params[]);
     void setLight(Character* player, GLuint light_number);
+    void LoadTexture();
 };
 
 #endif /* Game_hpp */

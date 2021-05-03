@@ -319,6 +319,8 @@ void Game::resetGame() {
     this->player2->setPlayerType(CharacterType::ENEMY);
 
     this->arena = initObject.arena;
+
+    this->LoadTexture();
 }
 
 Game::Game() {
@@ -491,4 +493,22 @@ void Game :: setIlumination(){
     }
 }
 
+void Game::LoadTexture() {
+    this->footballFieldTexture = new Texture();
+    this->footballFieldTexture->LoadTextureRAW("footballField.png");   
 
+    this->player1->torsoTexture = new Texture();
+    this->player1->torsoTexture->LoadTextureRAW("camisa_fla.png");
+
+    this->player2->torsoTexture = new Texture();
+    this->player2->torsoTexture->LoadTextureRAW("camisa_vasco.png");
+    
+    // game->player1->handTexture = new Texture();
+    // game->player1->handTexture->LoadTextureRAW("luva.png");
+
+    // game->player2->handTexture = new Texture();
+    // game->player2->handTexture->LoadTextureRAW("luva.png");
+
+    // game->audienceTexture = new Texture();
+    // game->audienceTexture->LoadTextureRAW("torcida.png");
+}

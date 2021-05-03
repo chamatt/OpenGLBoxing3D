@@ -83,14 +83,14 @@ void init(void)
     glEnable(GL_TEXTURE_2D);
     glDepthFunc(GL_LEQUAL); 
 
-    game->footballFieldTexture = new Texture();
-    game->footballFieldTexture->LoadTextureRAW("footballField.png");   
+    // game->footballFieldTexture = new Texture();
+    // game->footballFieldTexture->LoadTextureRAW("footballField.png");   
 
-    game->player1->torsoTexture = new Texture();
-    game->player1->torsoTexture->LoadTextureRAW("camisa_fla.png");
+    // game->player1->torsoTexture = new Texture();
+    // game->player1->torsoTexture->LoadTextureRAW("camisa_fla.png");
 
-    game->player2->torsoTexture = new Texture();
-    game->player2->torsoTexture->LoadTextureRAW("camisa_vasco.png");
+    // game->player2->torsoTexture = new Texture();
+    // game->player2->torsoTexture->LoadTextureRAW("camisa_vasco.png");
 
     // game->player1->handTexture = new Texture();
     // game->player1->handTexture->LoadTextureRAW("luva.png");
@@ -101,6 +101,7 @@ void init(void)
     // game->audienceTexture = new Texture();
     // game->audienceTexture->LoadTextureRAW("torcida.png");
 
+    game->LoadTexture();
 }
 
 
