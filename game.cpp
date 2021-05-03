@@ -275,6 +275,9 @@ void Game::keyPress(unsigned char key, int x, int y)
         case 't':
             textureEnabled = !textureEnabled;
             break;
+        case 'l':
+            shouldDrawLightIndicator = !shouldDrawLightIndicator;
+            break;
         case 27 :
             if(gameIsOver)
              exit(0);
@@ -455,7 +458,9 @@ void Game :: setLight(Character* player, GLuint light_number){
     GLfloat position_params[] = {player->gX, player->gY, player->gZ + player->torsoRadius + player->headRadius*2 + 130, 1.0};
     glLightfv(light_number, GL_POSITION, position_params);
 
-    DrawLight(position_params);
+    if(shouldDrawLightIndicator){
+        DrawLight(position_params);
+    }
 
     GLfloat ambient_params[] = {0.2, 0.2, 0.2, 1};
     glLightfv(light_number, GL_AMBIENT, ambient_params);
@@ -492,7 +497,9 @@ void Game :: setIlumination(){
         GLfloat position_params[] = {this->arena.x + this->arena.width/2, this->arena.y + this->arena.height/2, 300, 1};
         glLightfv(GL_LIGHT0, GL_POSITION, position_params);
 
-        DrawLight(position_params);
+        if(shouldDrawLightIndicator){
+            DrawLight(position_params);
+        }
     }
 }
 
