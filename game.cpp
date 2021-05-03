@@ -74,7 +74,7 @@ void Game::DrawArena(GLfloat x, GLfloat y, GLfloat z) {
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
     
-    GLfloat thickness = this->player1->torsoRadius * 2;
+    GLfloat thickness = (this->player1->headRadius + this->player1->torsoRadius + this->player1->legLength/2 + this->player1->legLength) * 2;
 
     glPushMatrix();
         glTranslatef(x,y,z -this->player1->torsoRadius - this->player1->legLength/2 - this->player1->legLength - thickness/2 - 0.5);
