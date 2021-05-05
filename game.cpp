@@ -454,6 +454,76 @@ void Game :: DrawLight(GLfloat position_params[]){
     glEnable(GL_LIGHTING);
 }
 
+
+void Game::DrawRectangle(GLfloat width, GLfloat height, Color color)
+{
+
+    glDisable(GL_LIGHTING);
+        GLfloat x1 = -width/2, x2 = width/2;
+        GLfloat y1 = -height/2, y2 = height/2;
+        glBegin(GL_POLYGON);
+            glColor4f(color.R, color.G, color.B, 0.5f);
+            glVertex2f(x1, y1);
+            glVertex2f(x2, y1);
+            glVertex2f(x2, y2);
+            glVertex2f(x1, y2);
+        glEnd();
+    glEnable(GL_LIGHTING);
+}
+
+void Game::DrawMiniMapArena(GLfloat width, GLfloat height, Color color)
+{
+    glDisable(GL_LIGHTING);
+        GLfloat x1 = -width/2, x2 = width/2;
+        GLfloat y1 = -height/2, y2 = height/2;
+        glBegin(GL_LINE_LOOP);
+            glColor4f(color.R, color.G, color.B, 0.5f);
+            glVertex2f(x1, y1);
+            glVertex2f(x2, y1);
+            glVertex2f(x2, y2);
+            glVertex2f(x1, y2);
+        glEnd();
+    glEnable(GL_LIGHTING);
+}
+
+void Game :: DrawMinimap() {
+    glMatrixMode (GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity ();
+    glOrtho (0, 1, 0, 1, -1, 1);
+
+
+    auto min_x = 0.75, max_x = 1.0, min_y = 0.0;
+
+    auto arena_width =(max_x - min_x);
+    auto arena_height = (arena_width) * (arena.height/arena.width);
+    auto arena_center_x = (arena_width / 2.0) + min_x;
+    auto arena_center_y = (arena_height / 2.0) + min_y;
+
+    auto player1_x = Util :: map(player1->gX, arena.x, arena.x + arena.width, min_x, max_x);
+    auto player1_y = Util :: map(player1->gY, arena.y, arena.y + arena.height, min_y,min_y + arena_height);
+    auto player2_x = Util :: map(player2->gX, arena.x, arena.x + arena.width, min_x, max_x);
+    auto player2_y = Util :: map(player2->gY, arena.y, arena.y + arena.height, min_y, min_y + arena_height);
+
+    glPushMatrix();
+        glTranslatef(arena_center_x, arena_center_y, 0);
+        DrawMiniMapArena(arena_width, arena_height, Color(0,0,255));
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(player1_x, player1_y, 0);
+        DrawRectangle(0.02,0.02, Color(0,255,0));
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(player2_x, player2_y, 0);
+        DrawRectangle(0.02,0.02, Color(255,0,0));
+    glPopMatrix();
+    
+    glPopMatrix();
+    glMatrixMode (GL_MODELVIEW);
+}
+
 void Game :: setLight(Character* player, GLuint light_number){
     GLfloat position_params[] = {player->gX, player->gY, player->gZ + player->torsoRadius + player->headRadius*2 + 130, 1.0};
     glLightfv(light_number, GL_POSITION, position_params);

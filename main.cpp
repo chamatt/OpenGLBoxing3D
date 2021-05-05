@@ -35,6 +35,7 @@ void renderScene(void)
         return;
     }
 
+    game->DrawMinimap();
     game->setTexture();
     game->setCamera();
     game->setIlumination();
@@ -46,7 +47,6 @@ void renderScene(void)
     if(!(game->player1->characterIsMoving()))
         game->player1->resetLegAngles();
 
-    cout << game->player1->gX << " " << game->player1->gY << " " << game->player1->gZ << endl;
     glutSwapBuffers(); // Desenha the new frame of the game->
 }
 
