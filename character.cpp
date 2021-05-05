@@ -158,11 +158,18 @@ void Character::DrawCircleDashed(GLint radius, Color color)
 }
 
 void Character::DrawLeftArms(GLfloat x, GLfloat y)
-{
+{   
+    //Interpolação
+    GLfloat x0 = -30, y0 = MIN_LEFT_ANGLE;
+    GLfloat X, Y = this->leftArmFirstJointAngle;
+    GLfloat x1 = 15, y1 = MAX_LEFT_ANGLE;
+    X = x0 + (x1-x0)*(Y-y0)/(y1-y0);
+
     glPushMatrix();
-    
     glTranslatef(x, y, 0); /* Move to left arm base */
     glRotatef(this->leftArmFirstJointAngle, 0, 0, 1);
+
+    glRotatef(X, 1, 0, 0);
     this->armJoint->Draw(this->armsColor); /* Smooth joint */
     this->DrawCuboid(this->armLength, this->armWidth, 7, this->armsColor);
     
@@ -179,11 +186,17 @@ void Character::DrawLeftArms(GLfloat x, GLfloat y)
 }
 
 void Character::DrawRightArms(GLfloat x, GLfloat y)
-{
+{   
+    //Interpolação
+    GLfloat x0 = -30, y0 = MIN_RIGHT_ANGLE;
+    GLfloat X, Y = this->rightArmFirstJointAngle;
+    GLfloat x1 = 15, y1 = MAX_RIGHT_ANGLE;
+    X = x0 + (x1-x0)*(Y-y0)/(y1-y0);
+
     glPushMatrix();
-    
     glTranslatef(x, y, 0); /* Move to right arm base */
     glRotatef(this->rightArmFirstJointAngle, 0, 0, 1);
+    glRotatef(X, 1, 0, 0);
     this->armJoint->Draw(this->armsColor); /* Smooth joint */
     this->DrawCuboid(this->armLength, this->armWidth, 7, this->armsColor);
     

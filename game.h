@@ -165,6 +165,7 @@ public:
     void setLight(Character* player, GLuint light_number);
     void LoadTexture();
     void setTexture();
+    void DrawCircle(GLfloat radius, Color color);
     void DrawRectangle(GLfloat width, GLfloat height, Color color);
     void DrawMiniMapArena(GLfloat width, GLfloat height, Color color);
     void DrawMinimap();

@@ -471,6 +471,21 @@ void Game::DrawRectangle(GLfloat width, GLfloat height, Color color)
     glEnable(GL_LIGHTING);
 }
 
+void Game::DrawCircle(GLfloat radius, Color color)
+{
+    glDisable(GL_LIGHTING);
+    float theta;
+    float step = 20.0;
+    glColor3f(color.R, color.G, color.B);
+    glBegin(GL_POLYGON);
+        for(int i = 0; i < 360/step; i++) {
+            theta = i*step*3.14/180;
+            glVertex2f(radius*cos(theta), radius*sin(theta));
+        }
+    glEnd();
+    glEnable(GL_LIGHTING);
+}
+
 void Game::DrawMiniMapArena(GLfloat width, GLfloat height, Color color)
 {
     glDisable(GL_LIGHTING);
@@ -512,12 +527,12 @@ void Game :: DrawMinimap() {
 
     glPushMatrix();
         glTranslatef(player1_x, player1_y, 0);
-        DrawRectangle(0.02,0.02, Color(0,255,0));
+        DrawCircle(0.02, Color(0,255,0));
     glPopMatrix();
 
     glPushMatrix();
         glTranslatef(player2_x, player2_y, 0);
-        DrawRectangle(0.02,0.02, Color(255,0,0));
+        DrawCircle(0.02, Color(255,0,0));
     glPopMatrix();
     
     glPopMatrix();
