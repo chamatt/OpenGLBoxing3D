@@ -325,6 +325,11 @@ void Game::resetGame() {
     this->player2->setPlayerType(CharacterType::ENEMY);
 
     this->arena = initObject.arena;
+    this->cameraNumber = 1;
+    this->cameraAngle = 60;
+    this->shouldDrawLightIndicator = false;
+    this->textureEnabled = true;
+    this->spotLight = false;
 
     this->LoadTexture();
 }
@@ -372,7 +377,12 @@ void Game :: setCamera(){
                             0, 0, 1);
     }else if(cameraNumber == 2){
         PrintText(0.05, 0.95, "Camera 2", Color(255,255,255));
-        
+
+        GLfloat x0 = -30, y0 = MIN_LEFT_ANGLE;
+        GLfloat X, Y = this->player1->leftArmFirstJointAngle;
+        GLfloat x1 = 15, y1 = MAX_LEFT_ANGLE;
+        X = x0 + (x1-x0)*(Y-y0)/(y1-y0);
+
         Vector3D* foreArm = new Vector3D(0, 0, 0);
         Vector3D* hand = new Vector3D(0, 0, 0);
 
@@ -381,6 +391,7 @@ void Game :: setCamera(){
         tr->rotate3d(this->player1->gTheta, 0, 0, 1);
         tr->translate3d(-this->player1->torsoRadius, 0, 0);
         tr->rotate3d(this->player1->leftArmFirstJointAngle, 0, 0, 1);
+        tr->rotate3d(X, 1, 0, 0);
         tr->translate3d(0, this->player1->armLength, 0);
         tr->rotate3d(this->player1->leftArmSecondJointAngle, 0, 0, 1);
         tr->translate3d(0, this->player1->foreArmLength/2, this->player1->handRadius);

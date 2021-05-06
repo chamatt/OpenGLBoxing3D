@@ -206,6 +206,125 @@ public:
     }
 };
 
+class Texture{
+public:
+    GLuint texture;
+    void LoadTextureRAW( const char * filename );
+};
+
+class Vertice{
+public:
+     //Vertex coordinate
+    GLfloat X;
+    GLfloat Y;
+    GLfloat Z;
+    
+    //Vertex normal 
+    GLfloat nX;
+    GLfloat nY;
+    GLfloat nZ;
+    
+    //Vertex texture coordinate
+    GLfloat U;
+    GLfloat V;
+};
+
+class Sphere{
+private:
+    void calculateCoordinates(GLfloat current_v, GLfloat current_h, int idx){
+        this->vertices[idx]->X = radius * sin(current_h / 180 * M_PI) * sin(current_v / 180 * M_PI);   
+        this->vertices[idx]->Y = - radius * cos(current_h / 180 * M_PI) * sin(current_v / 180 * M_PI);
+        this->vertices[idx]->Z = radius * cos(current_v / 180 * M_PI);
+        this->vertices[idx]->V = current_v / 180;
+        this->vertices[idx]->U = current_h / 360;
+        GLfloat norm = sqrt(this->vertices[idx]->X * this->vertices[idx]->X +
+            this->vertices[idx]->Y * this->vertices[idx]->Y +
+            this->vertices[idx]->Z * this->vertices[idx]->Z);
+
+        this->vertices[idx]->nX = this->vertices[idx]->X/norm;
+        this->vertices[idx]->nY = this->vertices[idx]->Y/norm;
+        this->vertices[idx]->nZ = this->vertices[idx]->Z/norm;
+    }
+public:
+    vector <Vertice*> vertices;
+    int numberOfVertices;
+    GLfloat radius;
+    GLfloat x, y, z;
+
+    Sphere(GLfloat radius, GLfloat space=1){
+        this->radius = radius;
+        this->numberOfVertices = (180 / space) * (2 + 360 / (2*space)) * 4;
+        this->vertices.resize(this->numberOfVertices);
+
+        for(int i=0;i<this->numberOfVertices;i++)
+            vertices[i] = new Vertice();
+
+        int idx = 0;
+
+        for(GLfloat v = 0;v <= 180-space; v += space)
+            for(GLfloat h = 0;h <= 360+2*space; h += 2*space){
+                GLfloat current_v = v;
+                GLfloat current_h = h;
+                calculateCoordinates(current_v, current_h, idx);
+                
+                idx++;
+
+                current_v = v + space;
+                current_h = h;
+                calculateCoordinates(current_v, current_h, idx);
+
+                idx++;
+
+                current_v = v;
+                current_h = h + space;
+                calculateCoordinates(current_v, current_h, idx);
+
+                idx++;
+
+                current_v = v + space;
+                current_h = h + space;
+                calculateCoordinates(current_v, current_h, idx);
+
+                idx++;
+            }
+    }
+
+    Sphere(GLfloat x, GLfloat y, GLfloat z, GLfloat radius):x(x), y(y), z(z), radius(radius){}
+
+    void Draw( Color color, Texture* texture = NULL){
+        GLfloat materialEmission[] = { 0.10, 0.10, 0.10, 1};
+        GLfloat materialColorA[] = { 0.2, 0.2, 0.2, 1};
+        GLfloat materialColorD[] = { 1.0, 1.0, 1.0, 1};
+        GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1};
+        GLfloat mat_shininess[] = { 100.0 };
+        glColor3f(1,1,1);
+    
+        glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+        glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+        glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+        if(texture){
+            glBindTexture (GL_TEXTURE_2D, texture->texture);
+        }
+        
+        glBegin (GL_TRIANGLE_STRIP);
+        for ( int i = 0; i <this->numberOfVertices; i++){
+            glNormal3f(this->vertices[i]->nX, this->vertices[i]->nY, this->vertices[i]->nZ);
+
+            if(texture){
+                glTexCoord2f(this->vertices[i]->U, this->vertices[i]->V);
+            }
+
+            glVertex3f (this->vertices[i]->X, this->vertices[i]->Y, this->vertices[i]->Z);
+        }
+        glEnd();
+
+        glBindTexture (GL_TEXTURE_2D, 0);
+        }
+};
+
 class Collision {
 public:
     
@@ -225,6 +344,14 @@ public:
     static bool circleCircleIntersect(Circle circle1, Circle circle2) {
         GLfloat intersectionRadius = circle1.radius + circle2.radius;
         return circle2.point.distanceTo(&circle1.point) < intersectionRadius;
+    }
+
+    static bool sphereSphereIntersect(Sphere* s1, Sphere* s2){
+        GLfloat d = sqrt((s1->x - s2->x)*(s1->x - s2->x) +
+                    (s1->y - s2->y)*(s1->y - s2->y) +
+                    (s1->z - s2->z)*(s1->z - s2->z));
+        
+        return !(Util :: lt(s1->radius + s2->radius, d));
     }
 };
 
@@ -273,120 +400,5 @@ class Transformation {
     
         void logMode(bool state);
 };
-
-class Texture{
-public:
-    GLuint texture;
-    void LoadTextureRAW( const char * filename );
-};
-
-class Vertice{
-public:
-     //Vertex coordinate
-    GLfloat X;
-    GLfloat Y;
-    GLfloat Z;
-    
-    //Vertex normal 
-    GLfloat nX;
-    GLfloat nY;
-    GLfloat nZ;
-    
-    //Vertex texture coordinate
-    GLfloat U;
-    GLfloat V;
-};
-
-class Sphere{
-private:
-    void calculateCoordinates(GLfloat current_v, GLfloat current_h, int idx){
-        this->vertices[idx]->X = radius * sin(current_h / 180 * M_PI) * sin(current_v / 180 * M_PI);   
-        this->vertices[idx]->Y = - radius * cos(current_h / 180 * M_PI) * sin(current_v / 180 * M_PI);
-        this->vertices[idx]->Z = radius * cos(current_v / 180 * M_PI);
-        this->vertices[idx]->V = current_v / 180;
-        this->vertices[idx]->U = current_h / 360;
-        GLfloat norm = sqrt(this->vertices[idx]->X * this->vertices[idx]->X +
-            this->vertices[idx]->Y * this->vertices[idx]->Y +
-            this->vertices[idx]->Z * this->vertices[idx]->Z);
-
-        this->vertices[idx]->nX = this->vertices[idx]->X/norm;
-        this->vertices[idx]->nY = this->vertices[idx]->Y/norm;
-        this->vertices[idx]->nZ = this->vertices[idx]->Z/norm;
-    }
-public:
-    vector <Vertice*> vertices;
-    int numberOfVertices;
-    GLfloat radius;
-    Sphere(GLfloat radius, GLfloat space=1){
-        this->radius = radius;
-        this->numberOfVertices = (180 / space) * (2 + 360 / (2*space)) * 4;
-        this->vertices.resize(this->numberOfVertices);
-
-        for(int i=0;i<this->numberOfVertices;i++)
-            vertices[i] = new Vertice();
-
-        int idx = 0;
-
-        for(GLfloat v = 0;v <= 180-space; v += space)
-            for(GLfloat h = 0;h <= 360+2*space; h += 2*space){
-                GLfloat current_v = v;
-                GLfloat current_h = h;
-                calculateCoordinates(current_v, current_h, idx);
-                
-                idx++;
-
-                current_v = v + space;
-                current_h = h;
-                calculateCoordinates(current_v, current_h, idx);
-
-                idx++;
-
-                current_v = v;
-                current_h = h + space;
-                calculateCoordinates(current_v, current_h, idx);
-
-                idx++;
-
-                current_v = v + space;
-                current_h = h + space;
-                calculateCoordinates(current_v, current_h, idx);
-
-                idx++;
-            }
-    }
-    void Draw( Color color, Texture* texture = NULL){
-        GLfloat materialEmission[] = { 0.10, 0.10, 0.10, 1};
-        GLfloat materialColorA[] = { 0.2, 0.2, 0.2, 1};
-        GLfloat materialColorD[] = { 1.0, 1.0, 1.0, 1};
-        GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1};
-        GLfloat mat_shininess[] = { 100.0 };
-        glColor3f(1,1,1);
-    
-        glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
-        glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
-        glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-        glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-
-        if(texture){
-            glBindTexture (GL_TEXTURE_2D, texture->texture);
-        }
-        
-        glBegin (GL_TRIANGLE_STRIP);
-        for ( int i = 0; i <this->numberOfVertices; i++){
-            glNormal3f(this->vertices[i]->nX, this->vertices[i]->nY, this->vertices[i]->nZ);
-
-            if(texture){
-                glTexCoord2f(this->vertices[i]->U, this->vertices[i]->V);
-            }
-
-            glVertex3f (this->vertices[i]->X, this->vertices[i]->Y, this->vertices[i]->Z);
-        }
-        glEnd();
-
-        glBindTexture (GL_TEXTURE_2D, 0);
-        }
-};
-
 
 #endif	/* FRAMEWORK_H */

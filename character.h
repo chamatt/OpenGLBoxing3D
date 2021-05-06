@@ -197,12 +197,18 @@ public:
     
     Transformation* rightGloveTransform() {
         Transformation* tr = new Transformation();
-//        tr->logMode(true);
+        
+        //Interpolação
+        GLfloat x0 = -30, y0 = MIN_RIGHT_ANGLE;
+        GLfloat X, Y = this->rightArmFirstJointAngle;
+        GLfloat x1 = 15, y1 = MAX_RIGHT_ANGLE;
+        X = x0 + (x1-x0)*(Y-y0)/(y1-y0);
         
         tr->translate3d(gX, gY, gZ);
         tr->rotate3d(gTheta, 0, 0, 1);
         tr->translate3d(this->torsoRadius, 0, 0);
         tr->rotate3d(this->rightArmFirstJointAngle, 0, 0, 1);
+        tr->rotate3d(X, 1, 0, 0);
         tr->translate3d(0, this->armLength, 0);  /* Move to second left arm joint */
         tr->rotate3d(this->rightArmSecondJointAngle, 0, 0, 1);
         tr->translate3d(0, this->foreArmLength, 0);  /* Move to second left arm joint */
@@ -214,10 +220,17 @@ public:
     Transformation* leftGloveTransform() {
         Transformation* tr = new Transformation();
         
+        //Interpolação
+        GLfloat x0 = -30, y0 = MIN_LEFT_ANGLE;
+        GLfloat X, Y = this->leftArmFirstJointAngle;
+        GLfloat x1 = 15, y1 = MAX_LEFT_ANGLE;
+        X = x0 + (x1-x0)*(Y-y0)/(y1-y0);
+
         tr->translate3d(gX, gY, gZ);
         tr->rotate3d(gTheta, 0, 0, 1);
         tr->translate3d(-this->torsoRadius, 0, 0);
         tr->rotate3d(this->leftArmFirstJointAngle, 0, 0, 1);
+        tr->rotate3d(X, 1, 0, 0);
         tr->translate3d(0, this->armLength, 0);  /* Move to second left arm joint */
         tr->rotate3d(this->leftArmSecondJointAngle, 0, 0, 1);
         tr->translate3d(0, this->foreArmLength, 0);  /* Move to second left arm joint */

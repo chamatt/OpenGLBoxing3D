@@ -54,7 +54,7 @@ public:
 
     bool spotLight = false;
     bool textureEnabled = true;
-    bool shouldDrawLightIndicator = true;
+    bool shouldDrawLightIndicator = false;
 
     Sphere* audience;
     

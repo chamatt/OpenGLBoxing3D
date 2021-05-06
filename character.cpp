@@ -168,7 +168,6 @@ void Character::DrawLeftArms(GLfloat x, GLfloat y)
     glPushMatrix();
     glTranslatef(x, y, 0); /* Move to left arm base */
     glRotatef(this->leftArmFirstJointAngle, 0, 0, 1);
-
     glRotatef(X, 1, 0, 0);
     this->armJoint->Draw(this->armsColor); /* Smooth joint */
     this->DrawCuboid(this->armLength, this->armWidth, 7, this->armsColor);
@@ -452,11 +451,17 @@ void Character::hitDetection(Character* another) {
     if(this->punchState == CharacterPunchState::LEFT_PUNCH) {
         Vector3D* thisPoint = new Vector3D(0, 0, 0);
         leftGloveTransform()->apply3D(thisPoint);
-    
-        Circle thisCircle = Circle(thisPoint->x, thisPoint->y, this->handRadius);
-        Circle anotherCircle = Circle(another->gX, another->gY, this->torsoRadius);
+
+        Sphere* thisSphere = new Sphere(thisPoint->x, thisPoint->y, thisPoint->z, this->handRadius);
+        Sphere* anotherSphere = new Sphere(another->gX, another->gY, another->gZ + this->torsoRadius, this->headRadius);
+
+        bool didCollide = Collision :: sphereSphereIntersect(thisSphere, anotherSphere);
+
+        // Circle thisCircle = Circle(thisPoint->x, thisPoint->y, this->handRadius);
+        // Circle anotherCircle = Circle(another->gX, another->gY, this->torsoRadius);
         
-        bool didCollide = Collision::circleCircleIntersect(thisCircle, anotherCircle);
+        // bool didCollide = Collision::circleCircleIntersect(thisCircle, anotherCircle);
+
         if(didCollide && countPoint){
             handleHitOpponent(another);
         }
@@ -464,11 +469,16 @@ void Character::hitDetection(Character* another) {
     } else if(this->punchState == CharacterPunchState::RIGHT_PUNCH) {
         Vector3D* thisPoint = new Vector3D(0, 0, 0);
         rightGloveTransform()->apply3D(thisPoint);
-    
-        Circle thisCircle = Circle(thisPoint->x, thisPoint->y, this->handRadius);
-        Circle anotherCircle = Circle(another->gX, another->gY, another->torsoRadius);
+
+        Sphere* thisSphere = new Sphere(thisPoint->x, thisPoint->y, thisPoint->z, this->handRadius);
+        Sphere* anotherSphere = new Sphere(another->gX, another->gY, another->gZ  + this->torsoRadius, this->headRadius);
+
+        bool didCollide = Collision :: sphereSphereIntersect(thisSphere, anotherSphere);
         
-        bool didCollide = Collision::circleCircleIntersect(thisCircle, anotherCircle);
+        // Circle thisCircle = Circle(thisPoint->x, thisPoint->y, this->handRadius);
+        // Circle anotherCircle = Circle(another->gX, another->gY, another->torsoRadius);
+        
+        // bool didCollide = Collision::circleCircleIntersect(thisCircle, anotherCircle);
         if(didCollide && countPoint){
             handleHitOpponent(another);
         }
